@@ -38,9 +38,17 @@
                 </table>
             </div>
         </div>
-        <div class="chart">
-            <div class="preview-box">Schaubild</div>
+        
+        <div class="data-visual">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckPiechart">
+                <label for="flexSwitchCheckPiechart">Einnahmen/Ausgaben</label> <!--Ändert sich je nach Switch Position-->
+            </div>
+            <div class="piechart"></div>
+            <p>Der Aktuelle Kontostand beträgt: </p>
+            <p id="account-balance">2534,65€</p>
         </div>
+        
         <div class="transaction-card">
             <h3>Ausgaben</h3>
             <div class="table-container">
