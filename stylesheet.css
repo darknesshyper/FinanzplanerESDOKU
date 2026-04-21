@@ -175,3 +175,7 @@ th, td {
 .form-switch{
   align-self: center;
 }
+
+#logo{
+  height: 47.2px;
+}
