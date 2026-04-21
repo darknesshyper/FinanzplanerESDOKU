@@ -1,23 +1,42 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ausgaben</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="stylesheet.css">
 </head>
+
 <body>
     <h1>Finanzplaner</h1>
-    <span class="d-flex justify-content-evenly border border-dark p-2" >
-    <img src="Finanzplaner_Logo.png" alt="Logo" id="logo">
-    <a href="index.html"><button class="button">Startseite</button></a>
-    <a href="uebersicht.html"><button class="button">Übersicht</button></a>
-    <a href="ausgaben.html"><button class="button active">Ausgaben</button></a>
-    <a href="einnahmen.html"><button class="button">Einnahmen</button></a>
-    </span>
-    
+
+    <!-- Desktop Navigation -->
+    <nav class="navbar-desktop">
+        <img src="Finanzplaner_Logo.png" alt="Logo" id="logo">
+        <a href="index.html"><button class="button">Startseite</button></a>
+        <a href="uebersicht.html"><button class="button">Übersicht</button></a>
+        <a href="ausgaben.html"><button class="button active">Ausgaben</button></a>
+        <a href="einnahmen.html"><button class="button">Einnahmen</button></a>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <details class="navbar-mobile">
+        <summary>☰ Menü</summary>
+        <nav class="mobile-menu">
+            <img src="" alt="Logo">
+            <a href="index.html"><button class="button">Startseite</button></a>
+            <a href="uebersicht.html"><button class="button">Übersicht</button></a>
+            <a href="ausgaben.html"><button class="button active">Ausgaben</button></a>
+            <a href="einnahmen.html"><button class="button">Einnahmen</button></a>
+        </nav>
+    </details>
+
 
 
     <footer class="footer">
@@ -28,4 +47,5 @@
         </div>
     </footer>
 </body>
+
 </html>
