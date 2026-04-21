@@ -168,7 +168,7 @@ td {
 
 .transactions-container {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr); /*1 fr would overflow */
   gap: 20px;
   margin: 30px 20px;
 }
