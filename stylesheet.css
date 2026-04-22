@@ -160,6 +160,18 @@ th, td {
   margin: 30px 20px;
 }
 
+.page-container {
+  display: grid;
+  grid-template-columns: 37.5% 37.5% 25%;
+  margin: 30px 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .piechart {
   width: 320px;
   height: 320px;
