@@ -173,11 +173,24 @@ td {
   margin: 30px 20px;
 }
 
+<<<<<<< HEAD
 @media (min-width: 1400px) {
   .transactions-container {
     grid-template-columns: 37.5% 25% 37.5%;
     gap: 0;
   }
+=======
+.page-container {
+  display: grid;
+  grid-template-columns: 37.5% 37.5% 25%;
+  margin: 30px 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+>>>>>>> add_structure_einnamhmen_ausgaben
 }
 
 .piechart {

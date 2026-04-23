@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 
@@ -15,13 +16,19 @@
 
 <body>
     <h1>Finanzplaner</h1>
+<<<<<<< HEAD
     <!-- Desktop Navigation -->
     <nav class="navbar-desktop">
         <img src="Finanzplaner_Logo.png" alt="Logo" id="logo">
+=======
+    <span class="d-flex justify-content-evenly border border-dark p-2">
+        <img src="" alt="Logo">
+>>>>>>> add_structure_einnamhmen_ausgaben
         <a href="index.html"><button class="button">Startseite</button></a>
         <a href="uebersicht.html"><button class="button">Übersicht</button></a>
         <a href="ausgaben.html"><button class="button">Ausgaben</button></a>
         <a href="einnahmen.html"><button class="button active">Einnahmen</button></a>
+<<<<<<< HEAD
     </nav>
 
     <!-- Mobile Navigation -->
@@ -35,7 +42,56 @@
             <a href="einnahmen.html"><button class="button active">Einnahmen</button></a>
         </nav>
     </details>
+=======
+    </span>
+>>>>>>> add_structure_einnamhmen_ausgaben
 
+    <div class="page-container">
+        <div class="transaction-card">
+            <h3>Neue Einnahme hinzufügen</h3>
+            <div class="form-group">
+                <label for="bezeichnung-einnahme">Bezeichnung</label>
+                <input type="text" id="bezeichnung-einnahme" class="form-control" placeholder="z.B. Lohn Minijob">
+            </div>
+            <div class="form-group">
+                <label for="betrag-einnahme">Geldbetrag (€)</label>
+                <input type="number" id="betrag-einnahme" class="form-control" placeholder="z.B. 520">
+            </div>
+            <div class="form-group">
+                <label for="kategorie-einnahme">Kategorie</label>
+                <input type="text" id="kategorie-einnahme" class="form-control" placeholder="z.B. Lohn">
+            </div>
+            <div class="form-group">
+                <label for="datum-einnahme">Datum</label>
+                <input type="date" id="datum-einnahme" class="form-control">
+            </div>
+            <button class="button">Hinzufügen</button>
+        </div>
+
+        <div class="transaction-card">
+            <h3>Einnahmen</h3>
+            <div class="table-container">
+                <table class="transaction-table">
+                    <tr>
+                        <th>Bezeichnung</th>
+                        <th>Geldbetrag</th>
+                        <th>Kategorie</th>
+                        <th>Datum</th>
+                    </tr>
+                    <tr>
+                        <td>Lohn Minijob</td>
+                        <td>520€</td>
+                        <td>Lohn</td>
+                        <td>01.04.2026</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="data-visual">
+            <div class="piechart"></div>
+        </div>
+    </div>
 
     <footer class="footer">
         <div class="footer-content">
@@ -45,5 +101,9 @@
         </div>
     </footer>
 </body>
+<<<<<<< HEAD
 
 </html>
+=======
+</html>
+>>>>>>> add_structure_einnamhmen_ausgaben
