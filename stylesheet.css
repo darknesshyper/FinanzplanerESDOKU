@@ -131,7 +131,7 @@ h1 {
   border: 2px solid #333;
   border-radius: 4px;
   padding: 20px;
-  height: 450px;
+  height: 469.4px;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -178,6 +178,17 @@ td {
     grid-template-columns: 37.5% 25% 37.5%;
     gap: 0;
   }
+.page-container {
+  display: grid;
+  grid-template-columns: 37.5% 37.5% 25%;
+  margin: 30px 20px 0px 20px;
+  height: fit-content;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .piechart {

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 
@@ -15,7 +16,6 @@
 
 <body>
     <h1>Finanzplaner</h1>
-
     <!-- Desktop Navigation -->
     <nav class="navbar-desktop">
         <img src="Finanzplaner_Logo.png" alt="Logo" id="logo">
@@ -36,8 +36,54 @@
             <a href="einnahmen.html"><button class="button">Einnahmen</button></a>
         </nav>
     </details>
+    </span>
 
+    <div class="page-container">
+        <div class="transaction-card" Style="margin-right: 20px; height: auto;">
+            <h3>Neue Ausgabe hinzufügen</h3>
+            <div class="form-group">
+                <label for="bezeichnung-ausgabe">Bezeichnung</label>
+                <input type="text" id="bezeichnung-ausgabe" class="form-control" placeholder="z.B. Kartoffeln">
+            </div>
+            <div class="form-group">
+                <label for="betrag-ausgabe">Geldbetrag (€)</label>
+                <input type="number" id="betrag-ausgabe" class="form-control" placeholder="z.B. 2">
+            </div>
+            <div class="form-group">
+                <label for="kategorie-ausgabe">Kategorie</label>
+                <input type="text" id="kategorie-ausgabe" class="form-control" placeholder="z.B. Lebensmittel">
+            </div>
+            <div class="form-group">
+                <label for="datum-ausgabe">Datum</label>
+                <input type="date" id="datum-ausgabe" class="form-control">
+            </div>
+            <button class="button">Hinzufügen</button>
+        </div>
 
+        <div class="transaction-card">
+            <h3>Ausgaben</h3>
+            <div class="table-container">
+                <table class="transaction-table">
+                    <tr>
+                        <th>Bezeichnung</th>
+                        <th>Geldbetrag</th>
+                        <th>Kategorie</th>
+                        <th>Datum</th>
+                    </tr>
+                    <tr>
+                        <td>Kartoffeln</td>
+                        <td>2€</td>
+                        <td>Lebensmittel</td>
+                        <td>14.04.2026</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="data-visual">
+            <div class="piechart"></div>
+        </div>
+    </div>
 
     <footer class="footer">
         <div class="footer-content">
@@ -47,5 +93,9 @@
         </div>
     </footer>
 </body>
+<<<<<<< HEAD
 
 </html>
+=======
+</html>
+>>>>>>> add_structure_einnamhmen_ausgaben
