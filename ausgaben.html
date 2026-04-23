@@ -15,27 +15,35 @@
 </head>
 
 <body>
-    <h1>Finanzplaner</h1>
-    <!-- Desktop Navigation -->
-    <nav class="navbar-desktop">
-        <img src="Finanzplaner_Logo.png" alt="Logo" id="logo">
-        <a href="index.html"><button class="button">Startseite</button></a>
-        <a href="uebersicht.html"><button class="button">Übersicht</button></a>
-        <a href="ausgaben.html"><button class="button active">Ausgaben</button></a>
-        <a href="einnahmen.html"><button class="button">Einnahmen</button></a>
-    </nav>
+    
+    <nav class="navbar navbar-expand-lg bg-body-tertiary ">
+        <div class="container-fluid">
 
-    <!-- Mobile Navigation -->
-    <details class="navbar-mobile">
-        <summary>☰ Menü</summary>
-        <nav class="mobile-menu">
-            <img src="Finanzplaner_Logo.png" alt="Logo" id="logo">
-            <a href="index.html"><button class="button">Startseite</button></a>
-            <a href="uebersicht.html"><button class="button">Übersicht</button></a>
-            <a href="ausgaben.html"><button class="button active">Ausgaben</button></a>
-            <a href="einnahmen.html"><button class="button">Einnahmen</button></a>
-        </nav>
-    </details>
+            <img src="Finanzplaner_Logo.png" style="width:50px;height:50px;" alt="Logo" id="logo">
+            <span class="navbar-brand ms-5">Finanzplaner</span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="index.html">Startseite</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="uebersicht.html">Übersicht</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="ausgaben.html">Ausgaben</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="einnahmen.html">Einnahmen</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <div class="page-container">
         <div class="transaction-card" Style="margin-right: 20px; height: auto;">

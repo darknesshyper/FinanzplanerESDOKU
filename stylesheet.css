@@ -9,29 +9,33 @@ body {
   background-color: white;
 }
 
-h1 {
-  text-align: center;
-  margin: 20px 0;
+.navbar {
+    background: #ffffff;
+    padding: 0.75rem 1.5rem;
 }
 
-.button {
-  transition-duration: 0.4s;
-  background-color: white;
-  border: 2px solid #333;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 4px;
+.navbar-brand {
+    font-weight: 700;
+    color: #1a1a1a;
 }
 
-.button:hover {
-  background-color: green;
-  color: white;
-  cursor: pointer;
+.nav-link {
+    margin-left: 15px;
+    border-radius: 6px;
+    color: #555;
 }
 
-.button.active {
-  background-color: grey;
-  color: white;
+.nav-link:hover {
+    background-color: #f8f9fa;
+    color: #28a745; 
+    border-color: #e9ecef;
+}
+
+.nav-link.active {
+    background-color: #e8f5e9;
+    color: #28a745 !important;
+    border-color: #c8e6c9;
+    font-weight: 600;
 }
 
 #welcome-section {
@@ -204,66 +208,6 @@ td {
 
 .form-switch {
   align-self: center;
-}
-
-.navbar-desktop {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  border: 2px solid #333;
-  padding: 10px 20px;
-  gap: 20px;
-}
-
-.navbar-desktop img {
-  width: 50px;
-}
-
-.navbar-mobile {
-  display: none;
-}
-
-@media (max-width: 767px) {
-  .navbar-desktop {
-    display: none;
-  }
-
-  .navbar-mobile {
-    display: block;
-    border: 2px solid #333;
-    padding: 10px 20px;
-  }
-
-  .navbar-mobile summary {
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 10px;
-    user-select: none;
-    color: #333;
-  }
-
-  .navbar-mobile summary:hover {
-    background-color: #f0f0f0;
-    border-radius: 4px;
-  }
-
-  .mobile-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid #ddd;
-  }
-
-  .mobile-menu a {
-    width: 100%;
-  }
-
-  .mobile-menu button {
-    width: 100%;
-  }
 }
 
  #logo{
