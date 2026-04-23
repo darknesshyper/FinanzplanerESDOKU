@@ -186,9 +186,18 @@ td {
 
 .page-container {
   display: grid;
+  grid-template-columns: minmax(0, 1fr); /*1 fr would overflow */
+  gap: 20px;
+  margin: 30px 20px;
+}
+
+@media (min-width: 1400px) {
+.page-container {
+  display: grid;
   grid-template-columns: 37.5% 37.5% 25%;
   margin: 30px 20px 0px 20px;
   height: fit-content;
+}
 }
 
 .form-group {
