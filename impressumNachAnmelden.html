@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ausgaben</title>
+    <title>Impressum</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
@@ -14,7 +14,6 @@
 </head>
 
 <body>
-
     <nav class="navbar navbar-expand-lg bg-body-tertiary ">
         <div class="container-fluid">
 
@@ -34,7 +33,7 @@
                         <a class="nav-link" href="uebersicht.html">Übersicht</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="ausgaben.html">Ausgaben</a>
+                        <a class="nav-link" href="ausgaben.html">Ausgaben</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="einnahmen.html">Einnahmen</a>
@@ -47,52 +46,35 @@
         </div>
     </nav>
 
-    <div class="page-container">
-        <div class="transaction-card me-lg-4 mb-4">
-            <h3>Neue Ausgabe hinzufügen</h3>
-            <div class="form-group">
-                <label for="bezeichnung-ausgabe">Bezeichnung</label>
-                <input type="text" id="bezeichnung-ausgabe" class="form-control" placeholder="z.B. Kartoffeln">
-            </div>
-            <div class="form-group">
-                <label for="betrag-ausgabe">Geldbetrag (€)</label>
-                <input type="number" id="betrag-ausgabe" class="form-control" placeholder="z.B. 2">
-            </div>
-            <div class="form-group">
-                <label for="kategorie-ausgabe">Kategorie</label>
-                <input type="text" id="kategorie-ausgabe" class="form-control" placeholder="z.B. Lebensmittel">
-            </div>
-            <div class="form-group">
-                <label for="datum-ausgabe">Datum</label>
-                <input type="date" id="datum-ausgabe" class="form-control">
-            </div>
-            <button class="button" onclick="location.href='ausgabenFormularGefuellt.html'">Hinzufügen</button>
-        </div>
+    <h2>Impressum</h2>
 
-        <div class="transaction-card">
-            <h3>Ausgaben</h3>
-            <div class="table-container">
-                <table class="transaction-table">
-                    <tr>
-                        <th>Bezeichnung</th>
-                        <th>Geldbetrag</th>
-                        <th>Kategorie</th>
-                        <th>Datum</th>
-                    </tr>
-                    <tr>
-                        <td>Kartoffeln</td>
-                        <td>2€</td>
-                        <td>Lebensmittel</td>
-                        <td>14.04.2026</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
+    <p>ESDOKU GmbH<br />
+        Firmenstra&szlig;e 1<br />
+        72458 Albstadt</p>
 
-        <div class="data-visual">
-            <div class="piechart"></div>
-        </div>
-    </div>
+    <p>Handelsregister: HRA 1234<br />
+        Registergericht: Stuttgart</p>
+
+    <p>Diese vertreten durch:<br />
+        David Kuder<br />
+        Nils Estler<br />
+        Gabriel Dos Santos</p>
+
+    <p>Handelsregister: HRB 1234<br />
+        Registergericht: HRB 1234</p>
+
+    <h2>Kontakt</h2>
+    <p>Telefon: 07431/1234<br />
+        E-Mail: firma@esdoku.de</p>
+
+    <h2>Umsatzsteuer-ID</h2>
+    <p>Umsatzsteuer-Identifikationsnummer gem&auml;&szlig; &sect; 27 a Umsatzsteuergesetz:<br />
+        DE123456789</p>
+
+    <h2>Verbraucher&shy;streit&shy;beilegung/Universal&shy;schlichtungs&shy;stelle</h2>
+    <p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle
+        teilzunehmen.</p>
+
 
     <footer class="footer">
         <div class="footer-content">
