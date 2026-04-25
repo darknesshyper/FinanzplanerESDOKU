@@ -314,3 +314,8 @@ td {
   color: #999;
   letter-spacing: 0.03em;
 }
+
+.disabled-link {
+        color: #d9dde0 !important;
+        pointer-events: none;     
+    }
