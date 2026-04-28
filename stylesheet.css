@@ -91,13 +91,10 @@ body {
   color: #333;
 }
 
-.preview-box {
-  background-color: #e0e0e0;
-  border: 2px solid #333;
-  padding: 80px 20px;
-  text-align: center;
-  color: #666;
-  font-size: 14px;
+.preview-image{
+  align-self: center;
+  height: 140px;
+  width: 420px;
 }
 
 .footer {
