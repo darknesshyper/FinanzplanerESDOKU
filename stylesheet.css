@@ -92,7 +92,7 @@ body {
   color: #333;
 }
 
-.preview-image{
+.preview-image {
   align-self: center;
   height: 140px;
   width: 420px;
@@ -295,8 +295,13 @@ td {
   border-radius: 4px 4px 0 0;
 }
 
-.red   { background: #c0392b; }
-.green { background: #27ae60; }
+.red {
+  background: #c0392b;
+}
+
+.green {
+  background: #27ae60;
+}
 
 .months {
   display: flex;
@@ -313,6 +318,19 @@ td {
 }
 
 .disabled-link {
-        color: #d9dde0 !important;
-        pointer-events: none;     
-    }
+  color: #d9dde0 !important;
+  pointer-events: none;
+}
+
+.card {
+  border: 2px solid #333;
+  border-radius: 4px !important;
+}
+
+.zentriertBestaetigung {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
