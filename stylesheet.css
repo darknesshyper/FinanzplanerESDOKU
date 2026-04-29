@@ -43,6 +43,7 @@ body {
 #welcome-section {
   background-color: white;
   border: 2px solid #333;
+  border-radius: 4px;
   padding: 30px;
   margin: 20px;
   text-align: center;
