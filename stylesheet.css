@@ -94,9 +94,7 @@ body {
 }
 
 .preview-image {
-  align-self: center;
-  height: 140px;
-  width: 420px;
+  width: 100%;
 }
 
 .footer {
