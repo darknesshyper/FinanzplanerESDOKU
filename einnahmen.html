@@ -47,7 +47,7 @@
     </nav>
 
     <div class="page-container">
-        <div class="transaction-card me-lg-4 mb-4" >
+        <div class="transaction-card me-lg-4 mb-4">
             <h3>Neue Einnahme hinzufügen</h3>
             <div class="form-group">
                 <label for="bezeichnung-einnahme">Bezeichnung</label>
@@ -74,11 +74,24 @@
                 <label for="datum-einnahme">Datum</label>
                 <input type="date" id="datum-einnahme" class="form-control">
             </div>
-             <button class="button" onclick="location.href='einnahmenFormularGefuellt.html'">Hinzufügen</button>
+            <button class="button" onclick="location.href='einnahmenFormularGefuellt.html'">Hinzufügen</button>
         </div>
 
         <div class="transaction-card">
             <h3>Einnahmen</h3>
+            <div class="form-group">
+                <select class="form-control" id="kategorie-einnahme-uebersicht">
+                    <option value="all">Alle Kategorien</option>
+                    <option value="gehalt">Gehalt/Lohn</option>
+                    <option value="nebenjob">Nebenjob</option>
+                    <option value="bonus">Bonus/Prämien</option>
+                    <option value="zinsen">Zinsen</option>
+                    <option value="mieteinnahmen">Mieteinnahmen</option>
+                    <option value="leistungen">Staatliche Leistungen</option>
+                    <option value="geschenke">Geschenke</option>
+                    <option value="sonstiges">Sonstiges</option>
+                </select>
+            </div>
             <div class="table-container">
                 <table class="transaction-table">
                     <tr>
