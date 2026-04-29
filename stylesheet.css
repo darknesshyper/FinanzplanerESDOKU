@@ -205,6 +205,10 @@ td {
   gap: 4px;
 }
 
+.category-filter {
+  flex-direction: row;
+}
+
 
 .piechart {
   width: 320px;
