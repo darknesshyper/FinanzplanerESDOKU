@@ -53,6 +53,19 @@
     <div class="transactions-container">
         <div class="transaction-card">
             <h3>Einnahmen</h3>
+            <div class="form-group">
+                <select class="form-control" id="kategorie-einnahme-uebersicht">
+                    <option value="all">Alle Kategorien</option>
+                    <option value="gehalt">Gehalt/Lohn</option>
+                    <option value="nebenjob">Nebenjob</option>
+                    <option value="bonus">Bonus/Prämien</option>
+                    <option value="zinsen">Zinsen</option>
+                    <option value="mieteinnahmen">Mieteinnahmen</option>
+                    <option value="leistungen">Staatliche Leistungen</option>
+                    <option value="geschenke">Geschenke</option>
+                    <option value="sonstiges">Sonstiges</option>
+                </select>
+            </div>
             <div class="table-container">
                 <table class="transaction-table">
                     <tr>
@@ -102,6 +115,31 @@
         </div>
 
         <div class="data-visual">
+            <div class="category-filter form-group">
+                <select id="uebersicht-month" class="form-control">
+                    <option value="jan">Januar</option>
+                    <option value="feb">Februar</option>
+                    <option value="mar">März</option>
+                    <option value="apr">April</option>
+                    <option value="mai">Mai</option>
+                    <option value="jun">Juni</option>
+                    <option value="jul">Juli</option>
+                    <option value="aug">August</option>
+                    <option value="sep">September</option>
+                    <option value="okt">Oktober</option>
+                    <option value="nov">November</option>
+                    <option value="dez">Dezember</option>
+                    <option value="all">Alle Monate</option>
+                </select>
+                <select id="uebersicht-year" class="form-control">
+                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="all">Alle Jahre</option>
+                </select>
+            </div>
             <div class="legend">
                 <span><span class="dot" style="background:#c0392b;"></span>Ausgaben</span>
                 <span><span class="dot" style="background:#27ae60;"></span>Einnahmen</span>
@@ -140,11 +178,30 @@
                 </div>
             </div>
             <p>Der Aktuelle Kontostand beträgt: </p>
-            <p id="account-balance">4521,64€</p>
-        </div>
+            <p id="account-balance">5673,25€</p>
 
         <div class="transaction-card">
             <h3>Ausgaben</h3>
+             <div class="form-group">
+                <select id="kategorie-ausgabe-uebersicht" class="form-control">
+                    <option value="all">Alle Kategorien</option>
+                    <option value="miete">Miete/Wohnen</option>
+                    <option value="nebenkosten">Nebenkosten</option>
+                    <option value="lebensmittel">Lebensmittel</option>
+                    <option value="transport">Transport/Benzin</option>
+                    <option value="versicherung">Versicherungen</option>
+                    <option value="internet">Internet/Handy</option>
+                    <option value="freizeit">Freizeit</option>
+                    <option value="restaurants">Restaurants/Essen gehen</option>
+                    <option value="kleidung">Kleidung</option>
+                    <option value="gesundheit">Gesundheit/Apotheke</option>
+                    <option value="abonnements">Abonnements</option>
+                    <option value="bildung">Bildung/Weiterbildung</option>
+                    <option value="reisen">Reisen/Urlaub</option>
+                    <option value="haushalt">Haushalt</option>
+                    <option value="sonstiges">Sonstiges</option>
+                </select>
+            </div>
             <div class="table-container">
                 <table class="transaction-table">
                     <tr>
