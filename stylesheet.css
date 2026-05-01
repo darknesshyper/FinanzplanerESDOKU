@@ -196,6 +196,7 @@ td {
   justify-content: center;
   margin: 40px 20px;
 }
+
 @media (min-width: 1400px) {
   .transactions-container {
     grid-template-columns: 33.3% 33.3% 33.3%;
@@ -358,4 +359,13 @@ td {
   align-items: center;
   justify-content: center;
   min-height: 0;
+}
+
+.action-buttons {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+tr:hover .action-buttons {
+  opacity: 1;
 }
