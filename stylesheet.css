@@ -23,7 +23,7 @@ body {
 
 .nav-link {
   margin-left: 15px;
-  border-radius: 6px;
+  border-radius: 4px;
   color: #555;
 }
 
@@ -229,14 +229,84 @@ td {
 }
 
 
-.piechart {
-  width: 320px;
-  height: 320px;
+.piechart_ausgaben {
+  width: 300px;
+  height: 300px;
   border-radius: 50%;
-  background-image: conic-gradient(pink 70deg,
-      lightblue 0 235deg,
-      orange 0);
-  align-self: center;
+  background-image: conic-gradient(#FFA500 0deg 293.4deg,
+      #87CEEB 293.4deg 326.75deg,
+      #FFB6C1 326.75deg 352.18deg,
+      #90EE90 352.18deg 358deg,
+      #FFD700 358deg 360deg);
+  margin: 0 auto 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.piechart_ausgaben_nach_aenderung {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background-image: conic-gradient(#FFA500 0deg 293deg,
+      #87CEEB 293deg 326.4deg,
+      #FFB6C1 326.4deg 352deg,
+      #90EE90 352deg 357.8deg,
+      #FFD700 357.8deg 360deg);
+  margin: 0 auto 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.piechart_einnahmen {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background-image: conic-gradient(#FFD700 0deg 84.2deg,
+      #87CEEB 84.2deg 213.0deg,
+      #90EE90 213.0deg 267.8deg,
+      #FFB6C1 267.8deg 277.8deg,
+      #FFA500 277.8deg 359.6deg,
+      #FFB347 359.6deg 360deg);
+  margin: 0 auto 20px;
+}
+
+.piechart_einnahmen_nach_aenderung {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background-image: conic-gradient(#FF6B6B 0deg 141.0deg,
+      #87CEEB 141.0deg 216.2deg,
+      #FFD700 216.2deg 265.1deg,
+      #FFA500 265.1deg 312.1deg,
+      #90EE90 312.1deg 344.0deg,
+      #FFB347 344.0deg 355.3deg,
+      #FFB6C1 355.3deg 360deg);
+  margin: 0 auto 20px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.legend-color {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.legend-text {
+  color: #333;
 }
 
 .form-switch {
@@ -266,7 +336,7 @@ td {
 .dot {
   width: 10px;
   height: 10px;
-  border-radius: 2px;
+  border-radius: 4px;
   flex-shrink: 0;
 }
 
