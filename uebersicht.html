@@ -163,79 +163,79 @@
                 </table>
             </div>
         </div>
-    </div>
-    <div class="data-visual">
-        <div class="category-filter form-group">
-            <select id="uebersicht-month" class="form-control">
-                <option value="jan">Januar</option>
-                <option value="feb">Februar</option>
-                <option value="mar">März</option>
-                <option value="apr">April</option>
-                <option value="mai">Mai</option>
-                <option value="jun">Juni</option>
-                <option value="jul">Juli</option>
-                <option value="aug">August</option>
-                <option value="sep">September</option>
-                <option value="okt">Oktober</option>
-                <option value="nov">November</option>
-                <option value="dez">Dezember</option>
-                <option value="all">Alle Monate</option>
-            </select>
-            <select id="uebersicht-year" class="form-control">
-                <option value="2026">2026</option>
-                <option value="2025">2025</option>
-                <option value="2024">2024</option>
-                <option value="2023">2023</option>
-                <option value="2022">2022</option>
-                <option value="all">Alle Jahre</option>
-            </select>
-        </div>
-        <div class="legend">
-            <span><span class="dot" style="background:#c0392b;"></span>Ausgaben</span>
-            <span><span class="dot" style="background:#27ae60;"></span>Einnahmen</span>
-        </div>
 
-        <div class="chart-row">
-            <div class="y-labels">
-                <span>1000€</span>
-                <span>800€</span>
-                <span>400€</span>
-                <span>200€</span>
-                <span>0</span>
+        <div class="data-visual">
+            <div class="category-filter form-group">
+                <select id="uebersicht-month" class="form-control">
+                    <option value="jan">Januar</option>
+                    <option value="feb">Februar</option>
+                    <option value="mar">März</option>
+                    <option value="apr">April</option>
+                    <option value="mai">Mai</option>
+                    <option value="jun">Juni</option>
+                    <option value="jul">Juli</option>
+                    <option value="aug">August</option>
+                    <option value="sep">September</option>
+                    <option value="okt">Oktober</option>
+                    <option value="nov">November</option>
+                    <option value="dez">Dezember</option>
+                    <option value="all">Alle Monate</option>
+                </select>
+                <select id="uebersicht-year" class="form-control">
+                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="all">Alle Jahre</option>
+                </select>
+            </div>
+            <div class="legend">
+                <span><span class="dot" style="background:#c0392b;"></span>Ausgaben</span>
+                <span><span class="dot" style="background:#27ae60;"></span>Einnahmen</span>
             </div>
 
-            <div style="flex:1; display:flex; flex-direction:column;">
-                <div class="barchart">
-                    <div class="group">
-                        <div class="bar red" style="height:136px;"></div>
-                        <div class="bar green" style="height:172px;"></div>
-                    </div>
-                    <div class="group">
-                        <div class="bar red" style="height:121px;"></div>
-                        <div class="bar green" style="height:143px;"></div>
-                    </div>
-                    <div class="group">
-                        <div class="bar red" style="height:154px;"></div>
-                        <div class="bar green" style="height:187px;"></div>
-                    </div>
+            <div class="chart-row">
+                <div class="y-labels">
+                    <span>1000€</span>
+                    <span>800€</span>
+                    <span>400€</span>
+                    <span>200€</span>
+                    <span>0</span>
                 </div>
 
-                <div class="months">
-                    <span>Januar</span>
-                    <span>Februar</span>
-                    <span>März</span>
+                <div style="flex:1; display:flex; flex-direction:column;">
+                    <div class="barchart">
+                        <div class="group">
+                            <div class="bar red" style="height:136px;"></div>
+                            <div class="bar green" style="height:172px;"></div>
+                        </div>
+                        <div class="group">
+                            <div class="bar red" style="height:121px;"></div>
+                            <div class="bar green" style="height:143px;"></div>
+                        </div>
+                        <div class="group">
+                            <div class="bar red" style="height:154px;"></div>
+                            <div class="bar green" style="height:187px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="months">
+                        <span>Januar</span>
+                        <span>Februar</span>
+                        <span>März</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <p>Der Aktuelle Kontostand beträgt: </p>
-        <p id="account-balance">2534,65€</p>
-    </div>
+            <p>Der Aktuelle Kontostand beträgt: </p>
+            <p id="account-balance">2534,65€</p>
 
-    <div class="transactions-container">
+        </div>
+
         <div class="transaction-card">
             <h3>Ausgaben</h3>
             <div class="form-group">
-                <select class="form-control" id="kategorie-ausgabe-uebersicht">
+                <select id="kategorie-ausgabe-uebersicht" class="form-control">
                     <option value="all">Alle Kategorien</option>
                     <option value="miete">Miete/Wohnen</option>
                     <option value="nebenkosten">Nebenkosten</option>
@@ -407,6 +407,7 @@
             </div>
         </div>
     </div>
+
 
     <footer class="footer">
         <div class="footer-content">
