@@ -41,7 +41,8 @@
                     </li>
                 </ul>
                 <div class="d-flex align-items-center gap-2">
-                    <a href="kontostand.html" class="btn btn-outline-secondary d-flex align-items-center" title="Kontostand festlegen">
+                    <a href="kontostand.html" class="btn btn-outline-secondary d-flex align-items-center"
+                        title="Kontostand festlegen">
                         <i class="bi bi-gear-fill"></i>
                     </a>
                     <a href="index.html" class="btn btn-outline-success">Login</a>
@@ -63,7 +64,16 @@
             </div>
             <div class="form-group">
                 <label for="kategorie-einnahme">Kategorie</label>
-                <input type="text" id="kategorie-einnahme" class="form-control" placeholder="z.B. Lohn">
+                <select class="form-control" id="kategorie-ausgabe">
+                    <option value="gehalt">Gehalt/Lohn</option>
+                    <option value="nebenjob">Nebenjob</option>
+                    <option value="bonus">Bonus/Prämien</option>
+                    <option value="zinsen">Zinsen</option>
+                    <option value="mieteinnahmen">Mieteinnahmen</option>
+                    <option value="leistungen">Staatliche Leistungen</option>
+                    <option value="geschenke">Geschenke</option>
+                    <option value="sonstiges">Sonstiges</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="datum-einnahme">Datum</label>
@@ -104,8 +114,38 @@
                     <tr>
                         <td>Miete Ferienwohnung</td>
                         <td>800€</td>
-                        <td>Miete</td>
-                        <td>01.05.2026</td>
+                        <td>Mieteinnahmen</td>
+                        <td>01.04.2026</td>
+                    </tr>
+                    <tr>
+                        <td>Steuerrückerstattung</td>
+                        <td>340€</td>
+                        <td>Staatliche Leistungen</td>
+                        <td>05.04.2026</td>
+                    </tr>
+                    <tr>
+                        <td>Geburtstagsgeschenk</td>
+                        <td>50€</td>
+                        <td>Geschenke</td>
+                        <td>10.04.2026</td>
+                    </tr>
+                    <tr>
+                        <td>Dividenden</td>
+                        <td>120€</td>
+                        <td>Zinsen</td>
+                        <td>15.04.2026</td>
+                    </tr>
+                    <tr>
+                        <td>Weihnachtsgeld</td>
+                        <td>500€</td>
+                        <td>Bonus/Prämien</td>
+                        <td>20.04.2026</td>
+                    </tr>
+                    <tr>
+                        <td>Gehalt Nebenjob</td>
+                        <td>1500€</td>
+                        <td>Nebenjob</td>
+                        <td>22.04.2026</td>
                     </tr>
                 </table>
             </div>
