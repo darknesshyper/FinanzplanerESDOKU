@@ -224,7 +224,7 @@ td {
   gap: 4px;
 }
 
-.dropdown{
+.dropdown {
   border-radius: 4px;
   accent-color: #198754;
 }
@@ -454,4 +454,12 @@ td {
 
 tr:hover .action-buttons {
   opacity: 1;
+}
+
+.btn {
+  border-radius: 4px !important;
+}
+
+.form-control {
+  border-radius: 4px !important;
 }
