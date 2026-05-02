@@ -318,6 +318,11 @@ td {
   width: 47.2px;
 }
 
+#login-button {
+  width: 426.8px;
+  height: 48px;
+}
+
 /*-----------Temporäres statisches Balkendiagramm--------------*/
 
 .legend {
