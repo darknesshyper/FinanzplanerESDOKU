@@ -224,6 +224,23 @@ td {
   gap: 4px;
 }
 
+.dropdown{
+  border-radius: 4px;
+  accent-color: #198754;
+}
+
+.dropdown option:checked {
+  background-color: #198754;
+  color: white;
+}
+
+.dropdown option:focus {
+  outline: 2px solid #198754 !important;
+  outline-offset: 0px;
+  border-color: #198754;
+  box-shadow: 0 0 0 2px #198754;
+}
+
 .category-filter {
   flex-direction: row;
 }
