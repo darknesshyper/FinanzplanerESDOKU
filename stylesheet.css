@@ -175,6 +175,9 @@ td {
   margin: 30px 20px;
 }
 
+#account-balance-dif {
+  color: #198754;
+}
 
 .kontostand-card {
   background-color: white;
