@@ -379,6 +379,7 @@ td {
 .y-labels span {
   color: #bbb;
   line-height: 1;
+  overflow-x: visible;
 }
 
 .barchart {
