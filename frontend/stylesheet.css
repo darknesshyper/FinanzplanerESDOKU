@@ -150,6 +150,19 @@ body {
   margin: 0px;
 }
 
+.data-visual-overview {
+  background-color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.data-visual-overview p {
+  text-align: center;
+  margin: 0px;
+}
+
 .table-container {
   overflow-x: auto;
   overflow-y: auto;
