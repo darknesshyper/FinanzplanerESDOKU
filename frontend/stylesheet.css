@@ -142,6 +142,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  height: 469.4px;
 }
 
 .data-visual p {
@@ -247,6 +248,10 @@ td {
   flex-direction: row;
 }
 
+.chart-container {
+  overflow-y: scroll;
+  height: 429.4px;
+}
 
 .piechart_ausgaben {
   width: 300px;
