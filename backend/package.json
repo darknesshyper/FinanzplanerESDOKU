@@ -1,0 +1,26 @@
+{
+  "name": "webanw2backend",
+  "version": "4.7.0",
+  "description": "Backend for WebAnwendungen2, mit Dateiupload",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./server.js",
+    "start": "node ./server.js"
+  },
+  "author": "Robert Kuti",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "express-fileupload": "^1.5.2",
+    "lodash": "^4.17.21",
+    "luxon": "^3.7.2",
+    "md5": "^2.3.0",
+    "morgan": "^1.10.1",
+    "nodemon": "^3.1.14",
+    "jsonwebtoken": "^9.0.3"
+  }
+}
