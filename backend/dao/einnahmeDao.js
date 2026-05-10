@@ -17,7 +17,7 @@ class EinnahmeDao {
         if (helper.isUndefined(result)) 
             throw new Error('No Record found by id=' + id);
 
-        return helper.objectKeysToLower(result);
+        return result;
     }
 
     loadAll() {
@@ -27,10 +27,6 @@ class EinnahmeDao {
 
         if (helper.isArrayEmpty(result)) 
             return [];
-
-        for (var i = 0; i < result.length; i++) {
-            result[i] = helper.objectKeysToLower(result[i]);
-        }
 
         return result;
     }

@@ -71,6 +71,8 @@ serviceRouter.post('/einnahme', function(request, response) {
             'Geschenke',
             'Sonstiges'
         ];
+
+        request.body.kategorie = request.body.kategorie.trim();
         
         if (!allowedCategories.includes(request.body.kategorie)) {
             errorMsgs.push('kategorie ungültig. Erlaubte Werte: ' + allowedCategories.join(', '));
@@ -87,7 +89,7 @@ serviceRouter.post('/einnahme', function(request, response) {
 
     const einnahmeDao = new EinnahmeDao(request.app.locals.dbConnection);
     try {
-        var obj = einnahmeDao.create(request.body.bezeichnung, request.body.geldbetrag, request.body.kategorie.id);
+        var obj = einnahmeDao.create(request.body.bezeichnung, request.body.geldbetrag, request.body.kategorie, request.body.datum);
         console.log('Service Einnahme: Record inserted');
         response.status(200).json(obj);
     } catch (ex) {
@@ -96,8 +98,60 @@ serviceRouter.post('/einnahme', function(request, response) {
     }    
 });
 
+serviceRouter.put('/einnahme', function(request, response) {
+    console.log('Service Einnahme: Client requested update of existing record');
 
+    var errorMsgs=[];
+    if (helper.isUndefined(request.body.id)) 
+        errorMsgs.push('id fehlt');
+    if (helper.isUndefined(request.body.bezeichnung)) 
+        errorMsgs.push('bezeichnung fehlt');
+    if (helper.isUndefined(request.body.geldbetrag)) {
+        errorMsgs.push('geldbetrag fehlt');
+    } else if (!helper.isNumeric(request.body.geldbetrag)) {
+        errorMsgs.push('geldbetrag muss eine Zahl sein');
+    } else if (request.body.geldbetrag <= 0) {
+        errorMsgs.push('geldbetrag muss eine Zahl > 0 sein');
+    }
+    if (helper.isUndefined(request.body.kategorie)) {
+        errorMsgs.push('kategorie fehlt');
+    } else {
+        const allowedCategories = [
+            'Gehalt/Lohn',
+            'Nebenjob',
+            'Bonus/Prämien',
+            'Zinsen',
+            'Mieteinnahmen',
+            'Staatliche Leistungen',
+            'Geschenke',
+            'Sonstiges'
+        ];
 
+        request.body.kategorie = request.body.kategorie.trim();
+        
+        if (!allowedCategories.includes(request.body.kategorie)) {
+            errorMsgs.push('kategorie ungültig. Erlaubte Werte: ' + allowedCategories.join(', '));
+        }
+    }
+    if (helper.isUndefined(request.body.datum)) 
+        errorMsgs.push('datum fehlt');
+
+    if (errorMsgs.length > 0) {
+        console.log('Service Einnahme: Update not possible, data missing');
+        response.status(400).json({ 'fehler': true, 'nachricht': 'Funktion nicht möglich. Fehlende Daten: ' + helper.concatArray(errorMsgs) });
+        return;
+    }
+
+    const einnahmeDao = new EinnahmeDao(request.app.locals.dbConnection);
+    try {
+        var obj = einnahmeDao.update(request.body.id, request.body.bezeichnung, request.body.geldbetrag, request.body.kategorie, request.body.datum);
+        console.log('Service Einnahme: Record updated, id=' + request.body.id);
+        response.status(200).json(obj);
+    } catch (ex) {
+        console.error('Service Einnahme: Error updating record by id. Exception occured: ' + ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
+    }    
+});
 
 serviceRouter.delete('/einnahme/:id', function(request, response) {
     console.log('Service Einnahme: Client requested deletion of record, id=' + request.params.id);
