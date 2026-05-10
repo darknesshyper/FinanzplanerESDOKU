@@ -65,15 +65,15 @@
             </div>
             <div class="form-group">
                 <label for="kategorie-einnahme">Kategorie</label>
-                <select class="dropdown form-control" id="kategorie-ausgabe">
-                    <option value="gehalt">Gehalt/Lohn</option>
-                    <option value="nebenjob">Nebenjob</option>
-                    <option value="bonus">Bonus/Prämien</option>
-                    <option value="zinsen">Zinsen</option>
-                    <option value="mieteinnahmen">Mieteinnahmen</option>
-                    <option value="leistungen">Staatliche Leistungen</option>
-                    <option value="geschenke">Geschenke</option>
-                    <option value="sonstiges">Sonstiges</option>
+                <select class="dropdown form-control" id="kategorie-einnahme">
+                    <option value="Gehalt/Lohn">Gehalt/Lohn</option>
+                    <option value="Nebenjob">Nebenjob</option>
+                    <option value="Bonus/Prämien">Bonus/Prämien</option>
+                    <option value="Zinsen">Zinsen</option>
+                    <option value="Mieteinnahmen">Mieteinnahmen</option>
+                    <option value="Staatliche Leistungen">Staatliche Leistungen</option>
+                    <option value="Geschenke">Geschenke</option>
+                    <option value="Sonstiges">Sonstiges</option>
                 </select>
             </div>
             <div class="form-group">
@@ -274,18 +274,28 @@
         $('#einnahme-hinzufuegen').click(function () {
             console.log('Einnahme hinzufügen Button geklickt');
 
+            var bezeichnung = $('#bezeichnung-einnahme').val();
+            var geldbetrag = parseFloat($('#betrag-einnahme').val());
+            var kategorie = $('#kategorie-einnahme').val();
+            var datum = $('#datum-einnahme').val();
+
+            console.log('DEBUG: bezeichnung=' + bezeichnung);
+            console.log('DEBUG: geldbetrag=' + geldbetrag);
+            console.log('DEBUG: kategorie=' + kategorie);
+            console.log('DEBUG: datum=' + datum);
+
             $.ajax({
-                url: 'http://localhost:3000/api/einnahme',
+                url: 'http://localhost:8000/api/einnahme',
                 method: 'POST',
                 contentType: 'application/json; charset=utf-8',
                 cache: false,
                 data: JSON.stringify({
-                    bezeichnung: $('#bezeichnung-einnahme').val(),
-                    betrag: parseFloat($('#betrag-einnahme').val()),
-                    kategorie: $('#kategorie-ausgabe').val(),
-                    datum: $('#datum-einnahme').val()
+                    bezeichnung: bezeichnung,
+                    geldbetrag: geldbetrag,
+                    kategorie: kategorie,
+                    datum: datum
                 })
-            }).done(function (response) {
+             }).done(function (response) {
                 console.log(response);
                 $('#output').html(response);
             }).fail(function (jqXHR, statusText, error) {
