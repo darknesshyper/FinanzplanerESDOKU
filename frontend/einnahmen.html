@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="stylesheet.css">
 </head>
@@ -64,23 +65,22 @@
             </div>
             <div class="form-group">
                 <label for="kategorie-einnahme">Kategorie</label>
-                <select class="dropdown form-control" id="kategorie-ausgabe">
-                    <option value="gehalt">Gehalt/Lohn</option>
-                    <option value="nebenjob">Nebenjob</option>
-                    <option value="bonus">Bonus/Prämien</option>
-                    <option value="zinsen">Zinsen</option>
-                    <option value="mieteinnahmen">Mieteinnahmen</option>
-                    <option value="leistungen">Staatliche Leistungen</option>
-                    <option value="geschenke">Geschenke</option>
-                    <option value="sonstiges">Sonstiges</option>
+                <select class="dropdown form-control" id="kategorie-einnahme">
+                    <option value="Gehalt/Lohn">Gehalt/Lohn</option>
+                    <option value="Nebenjob">Nebenjob</option>
+                    <option value="Bonus/Prämien">Bonus/Prämien</option>
+                    <option value="Zinsen">Zinsen</option>
+                    <option value="Mieteinnahmen">Mieteinnahmen</option>
+                    <option value="Staatliche Leistungen">Staatliche Leistungen</option>
+                    <option value="Geschenke">Geschenke</option>
+                    <option value="Sonstiges">Sonstiges</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="datum-einnahme">Datum</label>
                 <input type="date" id="datum-einnahme" class="form-control">
             </div>
-            <button type="button" class="btn btn-success w-100"
-                onclick="location.href='einnahmenFormularGefuellt.html'">Hinzufügen</button>
+            <button id="einnahme-hinzufuegen" type="button" class="btn btn-success w-100">Hinzufügen</button>
         </div>
 
         <div class="transaction-card">
@@ -268,6 +268,43 @@
             <a href="datenschutzNachAnmelden.html">Datenschutzerklärung</a>
         </div>
     </footer>
+
+
+    <script>
+        $('#einnahme-hinzufuegen').click(function () {
+            console.log('Einnahme hinzufügen Button geklickt');
+
+            var bezeichnung = $('#bezeichnung-einnahme').val();
+            var geldbetrag = parseFloat($('#betrag-einnahme').val());
+            var kategorie = $('#kategorie-einnahme').val();
+            var datum = $('#datum-einnahme').val();
+
+            console.log('DEBUG: bezeichnung=' + bezeichnung);
+            console.log('DEBUG: geldbetrag=' + geldbetrag);
+            console.log('DEBUG: kategorie=' + kategorie);
+            console.log('DEBUG: datum=' + datum);
+
+            $.ajax({
+                url: 'http://localhost:8000/api/einnahme',
+                method: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+                data: JSON.stringify({
+                    bezeichnung: bezeichnung,
+                    geldbetrag: geldbetrag,
+                    kategorie: kategorie,
+                    datum: datum
+                })
+            }).done(function (response) {
+                console.log(response);
+                $('#output').html(response);
+            }).fail(function (jqXHR, statusText, error) {
+                console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                $('#output').html('Ein Fehler ist aufgetreten');
+            });
+        });
+
+    </script>
 </body>
 
 </html>
