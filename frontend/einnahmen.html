@@ -99,31 +99,19 @@
                 </select>
             </div>
             <div class="table-container">
-                <table class="transaction-table">
-                    <tr>
-                        <th>Bezeichnung</th>
-                        <th>Geldbetrag</th>
-                        <th>Kategorie</th>
-                        <th>Datum</th>
-                        <th>Aktionen</th>
-                    </tr>
-                    <!--
-                    <tr>
-                        <td>Lohn Minijob</td>
-                        <td>520,48 €</td>
-                        <td>Lohn</td>
-                        <td>01.04.2026</td>
-                        <td class="action-buttons">
-                            <button class="btn btn-sm btn-outline-primary me-1" title="Bearbeiten">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" title="Löschen">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    -->
-                    
+                <table id="einnahmen-table" class="transaction-table">
+                    <thead>
+                        <tr>
+                            <th>Bezeichnung</th>
+                            <th>Geldbetrag</th>
+                            <th>Kategorie</th>
+                            <th>Datum</th>
+                            <th>Aktionen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Zeilen werden dynamisch eingefügt -->
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -230,6 +218,7 @@
                 })
             }).done(function (response) {
                 console.log(response);
+                loadTable();
                 $('#output').html(response);
             }).fail(function (jqXHR, statusText, error) {
                 console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
@@ -237,7 +226,9 @@
             });
         });
 
-        window.addEventListener("load", function () 
+        window.addEventListener("load", loadTable);
+        
+        function loadTable()
         {
             console.log('Tabelle aus bakend laden und anzeigen');
 
@@ -246,11 +237,34 @@
                 method: 'GET',
                 contentType: 'application/json; charset=utf-8',
                 cache: false,
-            }).done(function (response) 
+            }).done(refreshTable);
+        };
+
+        function refreshTable(response) 
+        {
+            console.log(response);
+            const tbody = document.querySelector('#einnahmen-table tbody');
+
+            for (let i = 0; i < response.length; i++) 
             {
-                console.log(response);
-            });  
-        });
+                var tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${response[i].bezeichnung}</td>
+                    <td>${response[i].geldbetrag}</td>
+                    <td>${response[i].kategorie}</td>
+                    <td>${response[i].datum}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Bearbeiten">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Löschen">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            }
+        };  
     </script>
 </body>
 
