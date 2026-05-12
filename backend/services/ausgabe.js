@@ -1,0 +1,185 @@
+const helper = require('../helper.js');
+const AusgabeDao = require('../dao/ausgabeDao.js');
+const express = require('express');
+var serviceRouter = express.Router();
+
+console.log('- Service Ausgabe');
+
+serviceRouter.get('/ausgabe/gib/:id', function(request, response) {
+    console.log('Service Ausgabe: Client requested one record, id=' + request.params.id);
+
+    const ausgabeDao = new AusgabeDao(request.app.locals.dbConnection);
+    try {
+        var obj = ausgabeDao.loadById(request.params.id);
+        console.log('Service Ausgabe: Record loaded');
+        response.status(200).json(obj);
+    } catch (ex) {
+        console.error('Service Ausgabe: Error loading record by id. Exception occured: ' + ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
+    }
+});
+
+serviceRouter.get('/ausgabe/alle', function(request, response) {
+    console.log('Service Ausgabe: Client requested all records');
+
+    const ausgabeDao = new AusgabeDao(request.app.locals.dbConnection);
+    try {
+        var arr = ausgabeDao.loadAll();
+        console.log('Service Ausgabe: Records loaded, count=' + arr.length);
+        response.status(200).json(arr);
+    } catch (ex) {
+        console.error('Service Ausgabe: Error loading all records. Exception occured: ' + ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
+    }
+});
+
+serviceRouter.get('/ausgabe/existiert/:id', function(request, response) {
+    console.log('Service Ausgabe: Client requested check, if record exists, id=' + request.params.id);
+
+    const ausgabeDao = new AusgabeDao(request.app.locals.dbConnection);
+    try {
+        var exists = ausgabeDao.exists(request.params.id);
+        console.log('Service Ausgabe: Check if record exists by id=' + request.params.id + ', exists=' + exists);
+        response.status(200).json({ 'id': request.params.id, 'existiert': exists });
+    } catch (ex) {
+        console.error('Service Ausgabe: Error checking if record exists. Exception occured: ' + ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
+    }
+});
+
+serviceRouter.post('/ausgabe', function(request, response) {
+    console.log('Service Ausgabe: Client requested creation of new record');
+
+    var errorMsgs = [];
+    if (helper.isUndefined(request.body.bezeichnung))
+        errorMsgs.push('bezeichnung fehlt');
+    if (helper.isUndefined(request.body.geldbetrag)) {
+        errorMsgs.push('geldbetrag fehlt');
+    } else if (!helper.isNumeric(request.body.geldbetrag)) {
+        errorMsgs.push('geldbetrag muss eine Zahl sein');
+    }
+    if (helper.isUndefined(request.body.kategorie)) {
+        errorMsgs.push('kategorie fehlt');
+    } else {
+        const allowedCategories = [
+            'Miete/Wohnen',
+            'Nebenkosten',
+            'Lebensmittel',
+            'Transport/Benzin',
+            'Versicherungen',
+            'Internet/Handy',
+            'Freizeit',
+            'Restaurants/Essen gehen',
+            'Kleidung',
+            'Gesundheit/Apotheke',
+            'Abonnements',
+            'Bildung/Weiterbildung',
+            'Reisen/Urlaub',
+            'Haushalt',
+            'Sonstiges'
+        ];
+
+        request.body.kategorie = request.body.kategorie.trim();
+
+        if (!allowedCategories.includes(request.body.kategorie)) {
+            errorMsgs.push('kategorie ungültig. Erlaubte Werte: ' + allowedCategories.join(', '));
+        }
+    }
+    if (helper.isUndefined(request.body.datum))
+        errorMsgs.push('datum fehlt');
+
+    if (errorMsgs.length > 0) {
+        console.log('Service Ausgabe: Creation not possible, data missing');
+        response.status(400).json({ 'fehler': true, 'nachricht': 'Funktion nicht möglich. Fehlende Daten: ' + helper.concatArray(errorMsgs) });
+        return;
+    }
+
+    const ausgabeDao = new AusgabeDao(request.app.locals.dbConnection);
+    try {
+        var obj = ausgabeDao.create(request.body.bezeichnung, request.body.geldbetrag, request.body.kategorie, request.body.datum);
+        console.log('Service Ausgabe: Record inserted');
+        response.status(200).json(obj);
+    } catch (ex) {
+        console.error('Service Ausgabe: Error creating new record. Exception occured: ' + ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
+    }
+});
+
+serviceRouter.put('/ausgabe', function(request, response) {
+    console.log('Service Ausgabe: Client requested update of existing record');
+
+    var errorMsgs = [];
+    if (helper.isUndefined(request.body.id))
+        errorMsgs.push('id fehlt');
+    if (helper.isUndefined(request.body.bezeichnung))
+        errorMsgs.push('bezeichnung fehlt');
+    if (helper.isUndefined(request.body.geldbetrag)) {
+        errorMsgs.push('geldbetrag fehlt');
+    } else if (!helper.isNumeric(request.body.geldbetrag)) {
+        errorMsgs.push('geldbetrag muss eine Zahl sein');
+    } else if (request.body.geldbetrag <= 0) {
+        errorMsgs.push('geldbetrag muss eine Zahl > 0 sein');
+    }
+    if (helper.isUndefined(request.body.kategorie)) {
+        errorMsgs.push('kategorie fehlt');
+    } else {
+        const allowedCategories = [
+            'Miete/Wohnen',
+            'Nebenkosten',
+            'Lebensmittel',
+            'Transport/Benzin',
+            'Versicherungen',
+            'Internet/Handy',
+            'Freizeit',
+            'Restaurants/Essen gehen',
+            'Kleidung',
+            'Gesundheit/Apotheke',
+            'Abonnements',
+            'Bildung/Weiterbildung',
+            'Reisen/Urlaub',
+            'Haushalt',
+            'Sonstiges'
+        ];
+        
+        request.body.kategorie = request.body.kategorie.trim();
+        
+        if (!allowedCategories.includes(request.body.kategorie)) {
+            errorMsgs.push('kategorie ungültig. Erlaubte Werte: ' + allowedCategories.join(', '));
+        }
+    }
+    if (helper.isUndefined(request.body.datum))
+        errorMsgs.push('datum fehlt');
+
+    if (errorMsgs.length > 0) {
+        console.log('Service Ausgabe: Update not possible, data missing');
+        response.status(400).json({ 'fehler': true, 'nachricht': 'Funktion nicht möglich. Fehlende Daten: ' + helper.concatArray(errorMsgs) });
+        return;
+    }
+
+    const ausgabeDao = new AusgabeDao(request.app.locals.dbConnection);
+    try {
+        var obj = ausgabeDao.update(request.body.id, request.body.bezeichnung, request.body.geldbetrag, request.body.kategorie, request.body.datum);
+        console.log('Service Ausgabe: Record updated, id=' + request.body.id);
+        response.status(200).json(obj);
+    } catch (ex) {
+        console.error('Service Ausgabe: Error updating record by id. Exception occured: ' + ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
+    }
+});
+
+serviceRouter.delete('/ausgabe/:id', function(request, response) {
+    console.log('Service Ausgabe: Client requested deletion of record, id=' + request.params.id);
+
+    const ausgabeDao = new AusgabeDao(request.app.locals.dbConnection);
+    try {
+        var obj = ausgabeDao.loadById(request.params.id);
+        ausgabeDao.delete(request.params.id);
+        console.log('Service Ausgabe: Deletion of record successfull, id=' + request.params.id);
+        response.status(200).json({ 'gelöscht': true, 'eintrag': obj });
+    } catch (ex) {
+        console.error('Service Ausgabe: Error deleting record. Exception occured: ' + ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
+    }
+});
+
+module.exports = serviceRouter;
