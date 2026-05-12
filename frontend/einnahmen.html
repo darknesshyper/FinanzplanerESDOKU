@@ -88,14 +88,14 @@
             <div class="form-group">
                 <select class="dropdown form-control" id="kategorie-einnahme-uebersicht">
                     <option value="all">Alle Kategorien</option>
-                    <option value="gehalt">Gehalt/Lohn</option>
-                    <option value="nebenjob">Nebenjob</option>
-                    <option value="bonus">Bonus/Prämien</option>
-                    <option value="zinsen">Zinsen</option>
-                    <option value="mieteinnahmen">Mieteinnahmen</option>
-                    <option value="leistungen">Staatliche Leistungen</option>
-                    <option value="geschenke">Geschenke</option>
-                    <option value="sonstiges">Sonstiges</option>
+                    <option value="Gehalt/Lohn">Gehalt/Lohn</option>
+                    <option value="Nebenjob">Nebenjob</option>
+                    <option value="Bonus/Prämien">Bonus/Prämien</option>
+                    <option value="Zinsen">Zinsen</option>
+                    <option value="Mieteinnahmen">Mieteinnahmen</option>
+                    <option value="Staatliche Leistungen">Staatliche Leistungen</option>
+                    <option value="Geschenke">Geschenke</option>
+                    <option value="Sonstiges">Sonstiges</option>
                 </select>
             </div>
             <div class="table-container">
@@ -230,7 +230,7 @@
         
         function loadTable()
         {
-            console.log('Tabelle aus bakend laden und anzeigen');
+            console.log('Tabelle aus backend laden und anzeigen');
 
             $.ajax({
                 url: 'http://localhost:8000/api/einnahme/alle',
