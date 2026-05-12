@@ -237,7 +237,10 @@
                 method: 'GET',
                 contentType: 'application/json; charset=utf-8',
                 cache: false,
-            }).done(refreshTable);
+            }).done(refreshTable).fail(function (jqXHR, statusText, error) {
+                console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                $('#output').html('Ein Fehler beim Laden der Daten aus der DB ist aufgetreten');
+            });
         };
 
         function refreshTable(response) 
@@ -250,7 +253,7 @@
                 var tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${response[i].bezeichnung}</td>
-                    <td>${response[i].geldbetrag}</td>
+                    <td>${response[i].geldbetrag} €</td>
                     <td>${response[i].kategorie}</td>
                     <td>${response[i].datum}</td>
                     <td class="action-buttons">
