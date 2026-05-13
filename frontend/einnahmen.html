@@ -260,7 +260,7 @@
                         <button class="btn btn-sm btn-outline-primary me-1" title="Bearbeiten">
                             <i class="bi bi-pencil"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" title="Löschen">
+                        <button class="btn btn-sm btn-outline-danger btn-delete" data-id="${response[i].id}" title="Löschen">
                             <i class="bi bi-trash"></i>
                         </button>
                     </td>
@@ -268,6 +268,22 @@
                 tbody.appendChild(tr);
             }
         };  
+
+        $(document).on('click', '.btn-delete', function () {
+            /*console.log('delete' + $(this).data('id'));*/ 
+            $.ajax({
+                url: 'http://localhost:8000/api/einnahme/' + $(this).data('id'),
+                method: 'DELETE',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+            }).done(function (response) {
+                loadTable();
+                $('#output').html(response);
+            }).fail(function (jqXHR, statusText, error) {
+                console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                $('#output').html('Ein Fehler beim Löschen des Eintrags aus der DB ist aufgetreten');
+            });
+        });
     </script>
 </body>
 

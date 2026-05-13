@@ -253,7 +253,7 @@
                         <button class="btn btn-sm btn-outline-primary me-1" title="Bearbeiten">
                             <i class="bi bi-pencil"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" title="Löschen">
+                        <button class="btn btn-sm btn-outline-danger btn-delete" data-id="${response[i].id}" data-tableid="${tabellenID}" title="Löschen">
                             <i class="bi bi-trash"></i>
                         </button>
                     </td>
@@ -262,6 +262,39 @@
             }
         };
 
+        $(document).on('click', '.btn-delete', function () {
+            console.log('delete: ' + $(this).data('id') + ' tabellenname: ' + $(this).data('tableid'));
+            if($(this).data('tableid') === 'ausgaben-table')
+            {
+                $.ajax({
+                url: 'http://localhost:8000/api/ausgabe/' + $(this).data('id'),
+                method: 'DELETE',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+                }).done(function (response) {
+                    loadTable();
+                    $('#output').html(response);
+                }).fail(function (jqXHR, statusText, error) {
+                    console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                    $('#output').html('Ein Fehler beim Löschen des Eintrags aus der DB ist aufgetreten');
+                });
+            }
+            if($(this).data('tableid') === 'einnahmen-table')
+            {
+                $.ajax({
+                url: 'http://localhost:8000/api/einnahme/' + $(this).data('id'),
+                method: 'DELETE',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+                }).done(function (response) {
+                    loadTable();
+                    $('#output').html(response);
+                }).fail(function (jqXHR, statusText, error) {
+                    console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                    $('#output').html('Ein Fehler beim Löschen des Eintrags aus der DB ist aufgetreten');
+                });
+            }
+        });
     </script>
 
 </body>

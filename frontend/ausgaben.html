@@ -127,62 +127,6 @@
                     <tbody>
                         <!--
                         <tr>
-                            <td>Kartoffeln</td>
-                            <td>1,99 €</td>
-                            <td>Lebensmittel</td>
-                            <td>14.04.2026</td>
-                            <td class="action-buttons">
-                                <button class="btn btn-sm btn-outline-primary me-1" title="Bearbeiten">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger" title="Löschen">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Kaltmiete</td>
-                            <td>750,00 €</td>
-                            <td>Miete/Wohnen</td>
-                            <td>01.04.2026</td>
-                            <td class="action-buttons">
-                                <button class="btn btn-sm btn-outline-primary me-1" title="Bearbeiten">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger" title="Löschen">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Stromrechnung</td>
-                            <td>85,24 €</td>
-                            <td>Nebenkosten</td>
-                            <td>02.04.2026</td>
-                            <td class="action-buttons">
-                                <button class="btn btn-sm btn-outline-primary me-1" title="Bearbeiten">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger" title="Löschen">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tankfüllung</td>
-                            <td>65,00 €</td>
-                            <td>Transport/Benzin</td>
-                            <td>03.04.2026</td>
-                            <td class="action-buttons">
-                                <button class="btn btn-sm btn-outline-primary me-1" title="Bearbeiten">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger" title="Löschen">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
                             <td>Netflix</td>
                             <td>18,00 €</td>
                             <td>Abonnements</td>
@@ -380,7 +324,7 @@
         
         function loadTable()
         {
-            console.log('Tabelle aus backend laden und anzeigen');
+            console.log('Tabelle aus backend laden');
 
             $.ajax({
                 url: 'http://localhost:8000/api/ausgabe/alle',
@@ -395,6 +339,7 @@
 
         function refreshTable(response) 
         {
+            console.log('Aus backend geladene Tabelle anzeigen');
             console.log(response);
             const tbody = document.querySelector('#ausgaben-table tbody');
 
@@ -410,7 +355,7 @@
                         <button class="btn btn-sm btn-outline-primary me-1" title="Bearbeiten">
                             <i class="bi bi-pencil"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" title="Löschen">
+                        <button class="btn btn-sm btn-outline-danger btn-delete" title="Löschen" data-id="${response[i].id}">
                             <i class="bi bi-trash"></i>
                         </button>
                     </td>
@@ -418,6 +363,22 @@
                 tbody.appendChild(tr);
             }
         };
+
+        $(document).on('click', '.btn-delete', function () {
+            /*console.log('delete' + $(this).data('id'));*/ 
+            $.ajax({
+                url: 'http://localhost:8000/api/ausgabe/' + $(this).data('id'),
+                method: 'DELETE',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+            }).done(function (response) {
+                loadTable();
+                $('#output').html(response);
+            }).fail(function (jqXHR, statusText, error) {
+                console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                $('#output').html('Ein Fehler beim Löschen des Eintrags aus der DB ist aufgetreten');
+            });
+        });
     </script>
 </body>
 
