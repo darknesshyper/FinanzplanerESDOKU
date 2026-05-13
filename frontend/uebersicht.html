@@ -210,6 +210,12 @@
             return parseFloat(zahl).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
         
+        function formatDatum(datum) {
+            if (!datum) return datum;
+            const parts = datum.split('-');
+            return parts[2] + '.' + parts[1] + '.' + parts[0];
+        }
+        
         function loadTables()
         {
             console.log('Tabelle aus backend laden');
@@ -252,7 +258,7 @@
                     <td>${response[i].bezeichnung}</td>
                     <td>${formatGeld(response[i].geldbetrag)} €</td>
                     <td>${response[i].kategorie}</td>
-                    <td>${response[i].datum}</td>
+                    <td>${formatDatum(response[i].datum)}</td>
                     <td class="action-buttons">
                         <button class="btn btn-sm btn-outline-primary me-1" title="Bearbeiten">
                             <i class="bi bi-pencil"></i>
