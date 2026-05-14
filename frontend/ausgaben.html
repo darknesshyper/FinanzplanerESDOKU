@@ -320,20 +320,25 @@
             });
         });
 
+        let allAusgaben = [];
+
         window.addEventListener("load", loadTable);
-        
+
+        $('#kategorie-ausgabe-uebersicht').change(() => {
+            filterAndDisplayTable();
+        });
+
         function formatGeld(zahl) {
             return parseFloat(zahl).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
-        
+
         function formatDatum(datum) {
             if (!datum) return datum;
             const parts = datum.split('-');
             return parts[2] + '.' + parts[1] + '.' + parts[0];
         }
-        
-        function loadTable()
-        {
+
+        function loadTable() {
             console.log('Tabelle aus backend laden');
 
             $.ajax({
@@ -341,20 +346,35 @@
                 method: 'GET',
                 contentType: 'application/json; charset=utf-8',
                 cache: false,
-            }).done(refreshTable).fail(function (jqXHR, statusText, error) {
+            }).done(function (response) {
+                allAusgaben = response;
+                filterAndDisplayTable();
+            }).fail(function (jqXHR, statusText, error) {
                 console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
                 $('#output').html('Ein Fehler beim Laden der Daten aus der DB ist aufgetreten');
             });
         };
 
-        function refreshTable(response) 
-        {
+        function filterAndDisplayTable() {
+            const selectedCategory = $('#kategorie-ausgabe-uebersicht').val();
+            console.log('Filter angewendet: ' + selectedCategory);
+
+            let filteredData = allAusgaben;
+
+            if (selectedCategory !== 'all') {
+                filteredData = allAusgaben.filter(item => item.kategorie === selectedCategory);
+            }
+
+            refreshTable(filteredData);
+        }
+
+        function refreshTable(response) {
             console.log('Aus backend geladene Tabelle anzeigen');
             console.log(response);
             const tbody = document.querySelector('#ausgaben-table tbody');
+            tbody.innerHTML = '';
 
-            for (let i = 0; i < response.length; i++) 
-            {
+            for (let i = 0; i < response.length; i++) {
                 var tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${response[i].bezeichnung}</td>
@@ -375,7 +395,7 @@
         };
 
         $(document).on('click', '.btn-delete', function () {
-            /*console.log('delete' + $(this).data('id'));*/ 
+            /*console.log('delete' + $(this).data('id'));*/
             $.ajax({
                 url: 'http://localhost:8000/api/ausgabe/' + $(this).data('id'),
                 method: 'DELETE',
