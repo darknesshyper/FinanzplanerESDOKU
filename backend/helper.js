@@ -10,6 +10,17 @@ module.exports.isNull = function(val) {
     return (val === null);
 }
 
+// checks if value is empty (undefined, null, empty string, or only whitespace)
+module.exports.isEmpty = function(val) {
+    if (val === undefined || val === null) 
+        return true;
+    
+    if (typeof val === 'string') 
+        return val.trim() === '';
+    
+    return false;
+}
+
 // checks if value is a number
 module.exports.isNumeric = function(val) {
     if (val === null) 
