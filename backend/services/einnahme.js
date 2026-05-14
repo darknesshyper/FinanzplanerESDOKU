@@ -51,14 +51,14 @@ serviceRouter.post('/einnahme', function(request, response) {
     console.log('Service Einnahme: Client requested creation of new record');
 
     var errorMsgs=[];
-    if (helper.isUndefined(request.body.bezeichnung)) 
+    if (helper.isEmpty(request.body.bezeichnung)) 
         errorMsgs.push('bezeichnung fehlt');
-    if (helper.isUndefined(request.body.geldbetrag)) {
+    if (helper.isEmpty(request.body.geldbetrag)) {
         errorMsgs.push('geldbetrag fehlt');
     } else if (!helper.isNumeric(request.body.geldbetrag)) {
         errorMsgs.push('geldbetrag muss eine Zahl sein');
     }
-   if (helper.isUndefined(request.body.kategorie)) {
+   if (helper.isEmpty(request.body.kategorie)) {
         errorMsgs.push('kategorie fehlt');
     } else {
         const allowedCategories = [
@@ -78,8 +78,8 @@ serviceRouter.post('/einnahme', function(request, response) {
             errorMsgs.push('kategorie ungültig. Erlaubte Werte: ' + allowedCategories.join(', '));
         }
     }
-    if (helper.isUndefined(request.body.datum)) 
-        errorMsgs.push('datum fehlt');
+    if (helper.isEmpty(request.body.datum))
+            errorMsgs.push('datum fehlt');
     
     if (errorMsgs.length > 0) {
         console.log('Service Einnahme: Creation not possible, data missing');
@@ -104,16 +104,16 @@ serviceRouter.put('/einnahme', function(request, response) {
     var errorMsgs=[];
     if (helper.isUndefined(request.body.id)) 
         errorMsgs.push('id fehlt');
-    if (helper.isUndefined(request.body.bezeichnung)) 
+    if (helper.isEmpty(request.body.bezeichnung)) 
         errorMsgs.push('bezeichnung fehlt');
-    if (helper.isUndefined(request.body.geldbetrag)) {
+    if (helper.isEmpty(request.body.geldbetrag)) {
         errorMsgs.push('geldbetrag fehlt');
     } else if (!helper.isNumeric(request.body.geldbetrag)) {
         errorMsgs.push('geldbetrag muss eine Zahl sein');
     } else if (request.body.geldbetrag <= 0) {
         errorMsgs.push('geldbetrag muss eine Zahl > 0 sein');
     }
-    if (helper.isUndefined(request.body.kategorie)) {
+    if (helper.isEmpty(request.body.kategorie)) {
         errorMsgs.push('kategorie fehlt');
     } else {
         const allowedCategories = [
@@ -133,7 +133,7 @@ serviceRouter.put('/einnahme', function(request, response) {
             errorMsgs.push('kategorie ungültig. Erlaubte Werte: ' + allowedCategories.join(', '));
         }
     }
-    if (helper.isUndefined(request.body.datum)) 
+    if (helper.isEmpty(request.body.datum)) 
         errorMsgs.push('datum fehlt');
 
     if (errorMsgs.length > 0) {
