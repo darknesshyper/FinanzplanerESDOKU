@@ -66,6 +66,7 @@
             <div class="form-group">
                 <label for="kategorie-einnahme">Kategorie</label>
                 <select class="dropdown form-control" id="kategorie-einnahme">
+                    <option value="">-- Bitte wählen --</option>
                     <option value="Gehalt/Lohn">Gehalt/Lohn</option>
                     <option value="Nebenjob">Nebenjob</option>
                     <option value="Bonus/Prämien">Bonus/Prämien</option>
@@ -192,8 +193,34 @@
 
 
     <script>
+        function clearEinnahmenErrors() {
+            $('#bezeichnung-einnahme').removeClass('error');
+            $('#betrag-einnahme').removeClass('error');
+            $('#kategorie-einnahme').removeClass('error');
+            $('#datum-einnahme').removeClass('error');
+        }
+
+        function markEinnahmenFieldsAsError(errorMsg) {
+            clearEinnahmenErrors();
+            
+            if (errorMsg.includes('bezeichnung')) {
+                $('#bezeichnung-einnahme').addClass('error');
+            }
+            if (errorMsg.includes('geldbetrag')) {
+                $('#betrag-einnahme').addClass('error');
+            }
+            if (errorMsg.includes('kategorie')) {
+                $('#kategorie-einnahme').addClass('error');
+            }
+            if (errorMsg.includes('datum')) {
+                $('#datum-einnahme').addClass('error');
+            }
+        }
+
         $('#einnahme-hinzufuegen').click(function () {
             console.log('Einnahme hinzufügen Button geklickt');
+            
+            clearEinnahmenErrors();
 
             var bezeichnung = $('#bezeichnung-einnahme').val();
             var geldbetrag = parseFloat($('#betrag-einnahme').val());
@@ -219,9 +246,24 @@
             }).done(function (response) {
                 console.log(response);
                 loadTable();
+                // Formular zurücksetzen
+                $('#bezeichnung-einnahme').val('');
+                $('#betrag-einnahme').val('');
+                $('#kategorie-einnahme').val('');
+                $('#datum-einnahme').val('');
                 $('#output').html(response);
             }).fail(function (jqXHR, statusText, error) {
                 console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                
+                try {
+                    const errorResponse = JSON.parse(jqXHR.responseText);
+                    if (errorResponse.nachricht) {
+                        markEinnahmenFieldsAsError(errorResponse.nachricht);
+                    }
+                } catch (e) {
+                    console.error('Fehler beim Parsen der Fehlermeldung:', e);
+                }
+                
                 $('#output').html('Ein Fehler ist aufgetreten');
             });
         });
