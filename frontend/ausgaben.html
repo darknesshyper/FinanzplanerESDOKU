@@ -67,6 +67,7 @@
             <div class="form-group">
                 <label for="kategorie-ausgabe">Kategorie</label>
                 <select id="kategorie-ausgabe" class="dropdown form-control">
+                    <option value="">-- Bitte wählen --</option>
                     <option value="Miete/Wohnen">Miete/Wohnen</option>
                     <option value="Nebenkosten">Nebenkosten</option>
                     <option value="Lebensmittel">Lebensmittel</option>
@@ -286,8 +287,34 @@
     </footer>
 
     <script>
+        function clearAusgabenErrors() {
+            $('#bezeichnung-ausgabe').removeClass('error');
+            $('#betrag-ausgabe').removeClass('error');
+            $('#kategorie-ausgabe').removeClass('error');
+            $('#datum-ausgabe').removeClass('error');
+        }
+
+        function markAusgabenFieldsAsError(errorMsg) {
+            clearAusgabenErrors();
+            
+            if (errorMsg.includes('bezeichnung')) {
+                $('#bezeichnung-ausgabe').addClass('error');
+            }
+            if (errorMsg.includes('geldbetrag')) {
+                $('#betrag-ausgabe').addClass('error');
+            }
+            if (errorMsg.includes('kategorie')) {
+                $('#kategorie-ausgabe').addClass('error');
+            }
+            if (errorMsg.includes('datum')) {
+                $('#datum-ausgabe').addClass('error');
+            }
+        }
+
         $('#ausgabe-hinzufuegen').click(function () {
             console.log('Ausgabe hinzufügen Button geklickt');
+            
+            clearAusgabenErrors();
 
             var bezeichnung = $('#bezeichnung-ausgabe').val();
             var geldbetrag = parseFloat($('#betrag-ausgabe').val());
@@ -313,12 +340,28 @@
             }).done(function (response) {
                 console.log(response);
                 loadTable();
+                // Formular zurücksetzen
+                $('#bezeichnung-ausgabe').val('');
+                $('#betrag-ausgabe').val('');
+                $('#kategorie-ausgabe').val('');
+                $('#datum-ausgabe').val('');
                 $('#output').html(response);
             }).fail(function (jqXHR, statusText, error) {
                 console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                
+                try {
+                    const errorResponse = JSON.parse(jqXHR.responseText);
+                    if (errorResponse.nachricht) {
+                        markAusgabenFieldsAsError(errorResponse.nachricht);
+                    }
+                } catch (e) {
+                    console.error('Fehler beim Parsen der Fehlermeldung:', e);
+                }
+                
                 $('#output').html('Ein Fehler ist aufgetreten');
             });
         });
+
 
         let allAusgaben = [];
 

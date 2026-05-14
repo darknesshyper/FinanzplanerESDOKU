@@ -240,6 +240,13 @@ td {
   gap: 4px;
 }
 
+.form-control.error,
+.dropdown.error {
+  border-color: #dc3545 !important;
+  border-width: 2px;
+  background-color: #fff5f5;
+}
+
 .dropdown {
   border-radius: 4px;
   accent-color: #198754;
