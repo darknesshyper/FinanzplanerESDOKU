@@ -185,6 +185,9 @@ try {
 
     serviceRouter = require('./services/ausgabe.js');
     app.use(TOPLEVELPATH, serviceRouter);
+
+    serviceRouter = require('./services/kontostand.js');
+    app.use(TOPLEVELPATH, serviceRouter);
     
     // send default error message if no matching endpoint found
     app.use(function (request, response) {
