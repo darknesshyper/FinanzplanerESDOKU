@@ -145,15 +145,15 @@
             </div>
             <div class="chart-container">
                 <div class="piechart_einnahmen"></div>
-
-                <div class="legend">
+                <div class="legend" id="einnahmen-legend"></div>
+                <!--<div class="legend">
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: #FFD700;"></div>
                         <span class="legend-text"><strong>Gehalt/Lohn:</strong> 520,48 € (23,4%)</span>
                     </div>
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: #87CEEB;"></div>
-                        <span class="legend-text"><strong>Mieteinnahmen:</strong> 800,00 € (35,8%)</span>
+                        <span class="legend-text"><strong>Mieteinnahmen:</strong> 800,00 € (35,8%)</span>   
                     </div>
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: #90EE90;"></div>
@@ -171,13 +171,9 @@
                         <div class="legend-color" style="background-color: #FFB347;"></div>
                         <span class="legend-text"><strong>Zinsen:</strong> 120,15 € (5,4%)</span>
                     </div>
-                </div>
-
+                </div>-->
                 <hr style="margin: 25px auto 12px; border: none; border-top: 1px solid #333; width: 80%;">
-
-                <div style="font-weight: bold; color: #333; text-align: center; margin-bottom: 10px;">
-                    <span>Gesamt: 2330,63 €</span>
-                </div>
+                <div id="einnahmen-gesamt" style="font-weight: bold; color: #333; text-align: center; margin-bottom: 10px;"></div>
             </div>
         </div>
     </div>
@@ -339,6 +335,7 @@
                 `;
                 tbody.appendChild(tr);
             }
+            updatePiechart_einnahmen(response);
         };
 
         $(document).on('click', '.btn-delete', function () {
@@ -356,6 +353,76 @@
                 $('#output').html('Ein Fehler beim Löschen des Eintrags aus der DB ist aufgetreten');
             });
         });
+
+        const kategoriefarben_einnahmen = {
+            'Gehalt/Lohn': '#FFD700',
+            'Nebenjob': '#87CEEB',
+            'Bonus/Prämien': '#90EE90',
+            'Zinsen': '#FFB6C1',
+            'Mieteinnahmen': '#FFA500',
+            'Staatliche Leistungen': '#FFB347',
+            'Geschenke': '#DDA0DD',
+            'Sonstiges': '#D3D3D3'
+        };
+
+        function updatePiechart_einnahmen(data) {
+            const summen = {};
+            data.forEach(item => {
+                const kat = item.kategorie;
+                summen[kat] = (summen[kat] || 0) + parseFloat(item.geldbetrag);
+            });
+
+            const kategorien = Object.keys(summen);
+            const gesamt = Object.values(summen).reduce((a, b) => a + b, 0);
+
+            let gradient = '';
+            let aktuellerWinkel = 0;
+
+            kategorien.forEach((kat, index) => {
+                const anteil = summen[kat] / gesamt;
+                const winkel = anteil * 360;
+                const farbe = kategoriefarben_einnahmen[kat] || '#CCCCCC';
+                const naechsterWinkel = aktuellerWinkel + winkel;
+
+                gradient += `${farbe} ${aktuellerWinkel.toFixed(2)}deg ${naechsterWinkel.toFixed(2)}deg`;
+                if (index < kategorien.length - 1) gradient += ', ';
+
+                aktuellerWinkel = naechsterWinkel;
+            });
+
+            if (kategorien.length === 0) {
+                document.querySelector('.piechart_einnahmen').style.backgroundImage =
+                    'conic-gradient(#e0e0e0 0deg 360deg)';
+            } else {
+                document.querySelector('.piechart_einnahmen').style.backgroundImage =
+                    `conic-gradient(${gradient})`;
+            }
+
+            const legend = document.getElementById('einnahmen-legend');
+            legend.innerHTML = '';
+
+            kategorien.forEach(kat => {
+                const farbe = kategoriefarben_einnahmen[kat] || '#CCCCCC';
+                const prozent = ((summen[kat] / gesamt) * 100).toFixed(1);
+                const betragFormatiert = summen[kat].toLocaleString('de-DE', {
+                    minimumFractionDigits: 2, maximumFractionDigits: 2
+                });
+
+                legend.innerHTML += `
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: ${farbe};"></div>
+                        <span class="legend-text">
+                            <strong>${kat}:</strong> ${betragFormatiert} € (${prozent}%)
+                        </span>
+                    </div>`;
+            });
+
+            const gesamtFormatiert = gesamt.toLocaleString('de-DE', {
+                minimumFractionDigits: 2, maximumFractionDigits: 2
+            });
+            document.getElementById('einnahmen-gesamt').innerHTML =
+                `<span>Gesamt: ${gesamtFormatiert} €</span>`;
+        }
     </script>
 </body>
 

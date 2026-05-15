@@ -245,8 +245,8 @@
             </div>
             <div class="chart-container">
                 <div class="piechart_ausgaben"></div>
-
-                <div class="legend">
+                <div class="legend" id="ausgaben-legend"></div>
+                <!--<div class="legend">
                     <div class="legend-item">
                         <div class="legend-color" style="background-color: #FFA500;"></div>
                         <span class="legend-text"><strong>Miete/Wohnen:</strong> 750,00 € (84,7%)</span>
@@ -267,13 +267,9 @@
                         <div class="legend-color" style="background-color: #FFD700;"></div>
                         <span class="legend-text"><strong>Lebensmittel:</strong> 1,99 € (0,2%)</span>
                     </div>
-                </div>
-
+                </div>-->
                 <hr style="margin: 25px auto 12px; border: none; border-top: 1px solid #333; width: 80%;">
-
-                <div style="font-weight: bold; color: #333; text-align: center; margin-bottom: 10px;">
-                    <span>Gesamt: 920,23 €</span>
-                </div>
+                <div id="ausgaben-gesamt" style="font-weight: bold; color: #333; text-align: center; margin-bottom: 10px;"></div>
             </div>
         </div>
     </div>
@@ -435,6 +431,7 @@
                 `;
                 tbody.appendChild(tr);
             }
+            updatePiechart_ausgaben(response);
         };
 
         $(document).on('click', '.btn-delete', function () {
@@ -452,6 +449,83 @@
                 $('#output').html('Ein Fehler beim Löschen des Eintrags aus der DB ist aufgetreten');
             });
         });
+
+        const kategoriefarben_ausgaben = {
+            'Miete/Wohnen': '#FFA500',
+            'Nebenkosten': '#87CEEB',
+            'Lebensmittel': '#FFD700',
+            'Transport/Benzin': '#FFB6C1',
+            'Versicherungen': '#90EE90',
+            'Internet/Handy': '#FF6B6B',
+            'Freizeit': '#DDA0DD',
+            'Restaurants/Essen gehen': '#F4A460',
+            'Kleidung': '#20B2AA',
+            'Gesundheit/Apotheke': '#FFB347',
+            'Abonnements': '#87CEFA',
+            'Bildung/Weiterbildung': '#98FB98',
+            'Reisen/Urlaub': '#F08080',
+            'Haushalt': '#BDB76B',
+            'Sonstiges': '#D3D3D3'
+        };
+
+        function updatePiechart_ausgaben(data) {
+            const summen = {};
+            data.forEach(item => {
+                const kat = item.kategorie;
+                summen[kat] = (summen[kat] || 0) + parseFloat(item.geldbetrag);
+            });
+
+            const kategorien = Object.keys(summen);
+            const gesamt = Object.values(summen).reduce((a, b) => a + b, 0);
+
+            let gradient = '';
+            let aktuellerWinkel = 0;
+
+            kategorien.forEach((kat, index) => {
+                const anteil = summen[kat] / gesamt;
+                const winkel = anteil * 360;
+                const farbe = kategoriefarben_ausgaben[kat] || '#CCCCCC';
+                const naechsterWinkel = aktuellerWinkel + winkel;
+
+                gradient += `${farbe} ${aktuellerWinkel.toFixed(2)}deg ${naechsterWinkel.toFixed(2)}deg`;
+                if (index < kategorien.length - 1) gradient += ', ';
+
+                aktuellerWinkel = naechsterWinkel;
+            });
+
+            if (kategorien.length === 0) {
+                document.querySelector('.piechart_ausgaben').style.backgroundImage =
+                    'conic-gradient(#e0e0e0 0deg 360deg)';
+            } else {
+                document.querySelector('.piechart_ausgaben').style.backgroundImage =
+                    `conic-gradient(${gradient})`;
+            }
+
+            const legend = document.getElementById('ausgaben-legend');
+            legend.innerHTML = '';
+
+            kategorien.forEach(kat => {
+                const farbe = kategoriefarben_ausgaben[kat] || '#CCCCCC';
+                const prozent = ((summen[kat] / gesamt) * 100).toFixed(1);
+                const betragFormatiert = summen[kat].toLocaleString('de-DE', {
+                    minimumFractionDigits: 2, maximumFractionDigits: 2
+                });
+
+                legend.innerHTML += `
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: ${farbe};"></div>
+                        <span class="legend-text">
+                            <strong>${kat}:</strong> ${betragFormatiert} € (${prozent}%)
+                        </span>
+                    </div>`;
+            });
+
+            const gesamtFormatiert = gesamt.toLocaleString('de-DE', {
+                minimumFractionDigits: 2, maximumFractionDigits: 2
+            });
+           document.getElementById('ausgaben-gesamt').innerHTML =
+            `<span>Gesamt: ${gesamtFormatiert} €</span>`;
+        }
     </script>
 </body>
 
