@@ -177,7 +177,8 @@
                     </div>
                 </div>-->
                 <hr style="margin: 25px auto 12px; border: none; border-top: 1px solid #333; width: 80%;">
-                <div id="einnahmen-gesamt" style="font-weight: bold; color: #333; text-align: center; margin-bottom: 10px;"></div>
+                <div id="einnahmen-gesamt"
+                    style="font-weight: bold; color: #333; text-align: center; margin-bottom: 10px;"></div>
             </div>
         </div>
     </div>
@@ -202,7 +203,7 @@
 
         function markEinnahmenFieldsAsError(errorMsg) {
             clearEinnahmenErrors();
-            
+
             if (errorMsg.includes('bezeichnung')) {
                 $('#bezeichnung-einnahme').addClass('error');
             }
@@ -219,7 +220,7 @@
 
         $('#einnahme-hinzufuegen').click(function () {
             console.log('Einnahme hinzufügen Button geklickt');
-            
+
             clearEinnahmenErrors();
 
             var bezeichnung = $('#bezeichnung-einnahme').val();
@@ -254,7 +255,7 @@
                 $('#output').html(response);
             }).fail(function (jqXHR, statusText, error) {
                 console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
-                
+
                 try {
                     const errorResponse = JSON.parse(jqXHR.responseText);
                     if (errorResponse.nachricht) {
@@ -263,12 +264,12 @@
                 } catch (e) {
                     console.error('Fehler beim Parsen der Fehlermeldung:', e);
                 }
-                
+
                 $('#output').html('Ein Fehler ist aufgetreten');
             });
         });
 
-        let allEinnahmen = []; 
+        let allEinnahmen = [];
 
         window.addEventListener("load", loadTable);
 
@@ -358,7 +359,6 @@
             });
         });
 
-<<<<<<< HEAD
         const kategoriefarben_einnahmen = {
             'Gehalt/Lohn': '#FFD700',
             'Nebenjob': '#87CEEB',
@@ -428,7 +428,7 @@
             document.getElementById('einnahmen-gesamt').innerHTML =
                 `<span>Gesamt: ${gesamtFormatiert} €</span>`;
         }
-=======
+
         $(document).on('click', '.btn-edit', function () {
             $.ajax({
                 url: 'http://localhost:8000/api/einnahme/gib/' + $(this).data('id'),
@@ -455,17 +455,17 @@
 
             $(document).on('click', '#einnahme-speichern', function () {
                 $.ajax({
-                url: 'http://localhost:8000/api/einnahme',
-                method: 'PUT',
-                contentType: 'application/json; charset=utf-8',
-                cache: false,
-                data: JSON.stringify({
-                    id: einnahme.id, 
-                    bezeichnung: $('#bezeichnung-einnahme').val(),
-                    geldbetrag: $('#betrag-einnahme').val(),
-                    kategorie: $('#kategorie-einnahme').val(),
-                    datum: $('#datum-einnahme').val()
-                })
+                    url: 'http://localhost:8000/api/einnahme',
+                    method: 'PUT',
+                    contentType: 'application/json; charset=utf-8',
+                    cache: false,
+                    data: JSON.stringify({
+                        id: einnahme.id,
+                        bezeichnung: $('#bezeichnung-einnahme').val(),
+                        geldbetrag: $('#betrag-einnahme').val(),
+                        kategorie: $('#kategorie-einnahme').val(),
+                        datum: $('#datum-einnahme').val()
+                    })
                 }).done(function (response) {
                     document.querySelector('#einnahme-heading').innerHTML = 'Neue Einnahme hinzufügen';
                     document.querySelector('#bezeichnung-einnahme').value = '';
@@ -479,11 +479,11 @@
                 }).fail(function (jqXHR, statusText, error) {
                     console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
                     $('#output').html('Ein Fehler beim Laden des Eintrags aus der DB ist aufgetreten');
-                });          
+                });
             });
 
             $(document).on('click', '#einnahme-verwerfen', function () {
-                
+
                 document.querySelector('#einnahme-heading').innerHTML = 'Neue Einnahme hinzufügen';
                 document.querySelector('#bezeichnung-einnahme').value = '';
                 document.querySelector('#betrag-einnahme').value = '';
@@ -492,12 +492,9 @@
                 loadTable();
                 document.querySelector('#einnahme-hinzufuegen').style.display = '';
                 document.querySelector('#btn-bearbeiten').style.display = 'none';
-                $('#output').html(response);        
+                $('#output').html(response);
             });
         });
-
-
->>>>>>> add-function-edit-btn
     </script>
 </body>
 
