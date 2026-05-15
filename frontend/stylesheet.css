@@ -367,6 +367,14 @@ td {
   height: 48px;
 }
 
+#btn-bearbeiten {
+    display: flex;
+    gap: 10px;
+}
+
+#btn-bearbeiten button {
+    width: 50%;
+}
 /*-----------Temporäres statisches Balkendiagramm--------------*/
 
 .legend {

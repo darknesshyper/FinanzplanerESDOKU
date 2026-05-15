@@ -54,7 +54,7 @@
 
     <div class="page-container">
         <div class="transaction-card me-lg-4 mb-4">
-            <h3>Neue Einnahme hinzufügen</h3>
+            <h3 id="einnahme-heading">Neue Einnahme hinzufügen</h3>
             <div class="form-group">
                 <label for="bezeichnung-einnahme">Bezeichnung</label>
                 <input type="text" id="bezeichnung-einnahme" class="form-control" placeholder="z.B. Lohn Minijob">
@@ -82,6 +82,10 @@
                 <input type="date" id="datum-einnahme" class="form-control">
             </div>
             <button id="einnahme-hinzufuegen" type="button" class="btn btn-success w-100">Hinzufügen</button>
+            <div id="btn-bearbeiten" style="display:none">
+                <button id="einnahme-speichern" type="button" class="btn btn-success w-100">Änderung speichern</button>
+                <button id="einnahme-verwerfen" type="button" class="btn btn-success w-100">Änderung verwerfen</button>
+            </div>
         </div>
 
         <div class="transaction-card">
@@ -329,7 +333,7 @@
                     <td>${response[i].kategorie}</td>
                     <td>${formatDatum(response[i].datum)}</td>
                     <td class="action-buttons">
-                        <button class="btn btn-sm btn-outline-primary me-1" title="Bearbeiten">
+                        <button class="btn btn-sm btn-outline-primary me-1 btn-edit" data-id="${response[i].id}" title="Bearbeiten">
                             <i class="bi bi-pencil"></i>
                         </button>
                         <button class="btn btn-sm btn-outline-danger btn-delete" data-id="${response[i].id}" title="Löschen">
@@ -356,6 +360,75 @@
                 $('#output').html('Ein Fehler beim Löschen des Eintrags aus der DB ist aufgetreten');
             });
         });
+
+        $(document).on('click', '.btn-edit', function () {
+            $.ajax({
+                url: 'http://localhost:8000/api/einnahme/gib/' + $(this).data('id'),
+                method: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+            }).done(function (response) {
+                einnahme = response;
+
+                document.querySelector('#einnahme-heading').innerHTML = 'Einnahme bearbeiten';
+                document.querySelector('#bezeichnung-einnahme').value = einnahme.bezeichnung;
+                document.querySelector('#betrag-einnahme').value = einnahme.geldbetrag
+                document.querySelector('#kategorie-einnahme').value = einnahme.kategorie;
+                document.querySelector('#datum-einnahme').value = einnahme.datum;
+
+                document.querySelector('#einnahme-hinzufuegen').style.display = 'none';
+                document.querySelector('#btn-bearbeiten').style.display = '';
+
+                $('#output').html(response);
+            }).fail(function (jqXHR, statusText, error) {
+                console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                $('#output').html('Ein Fehler beim Laden des Eintrags aus der DB ist aufgetreten');
+            });
+
+            $(document).on('click', '#einnahme-speichern', function () {
+                $.ajax({
+                url: 'http://localhost:8000/api/einnahme',
+                method: 'PUT',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+                data: JSON.stringify({
+                    id: einnahme.id, 
+                    bezeichnung: $('#bezeichnung-einnahme').val(),
+                    geldbetrag: $('#betrag-einnahme').val(),
+                    kategorie: $('#kategorie-einnahme').val(),
+                    datum: $('#datum-einnahme').val()
+                })
+                }).done(function (response) {
+                    document.querySelector('#einnahme-heading').innerHTML = 'Neue Einnahme hinzufügen';
+                    document.querySelector('#bezeichnung-einnahme').value = '';
+                    document.querySelector('#betrag-einnahme').value = '';
+                    document.querySelector('#kategorie-einnahme').value = '';
+                    document.querySelector('#datum-einnahme').value = '';
+                    loadTable();
+                    document.querySelector('#einnahme-hinzufuegen').style.display = '';
+                    document.querySelector('#btn-bearbeiten').style.display = 'none';
+                    $('#output').html(response);
+                }).fail(function (jqXHR, statusText, error) {
+                    console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                    $('#output').html('Ein Fehler beim Laden des Eintrags aus der DB ist aufgetreten');
+                });          
+            });
+
+            $(document).on('click', '#einnahme-verwerfen', function () {
+                
+                document.querySelector('#einnahme-heading').innerHTML = 'Neue Einnahme hinzufügen';
+                document.querySelector('#bezeichnung-einnahme').value = '';
+                document.querySelector('#betrag-einnahme').value = '';
+                document.querySelector('#kategorie-einnahme').value = '';
+                document.querySelector('#datum-einnahme').value = '';
+                loadTable();
+                document.querySelector('#einnahme-hinzufuegen').style.display = '';
+                document.querySelector('#btn-bearbeiten').style.display = 'none';
+                $('#output').html(response);        
+            });
+        });
+
+
     </script>
 </body>
 
