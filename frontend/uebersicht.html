@@ -150,8 +150,9 @@
                 </div>
             </div>
             <p>Der Aktuelle Kontostand beträgt: </p>
-            <p id="account-balance">2534,65 €</p>
-            <p><span id="account-balance-dif">+483,21</span><span> € seit 12.01.2026</span><span> (2051,44 €)</span></p>
+            <p id="account-balance">0,00 €</p>
+            <p><span id="account-balance-dif">+0,00</span><span> € seit letzter Aktualisierung</span><span
+                    id="start-kontostand-display"> (0,00 €)</span></p>
         </div>
 
         <div class="transaction-card">
@@ -206,8 +207,10 @@
     <script>
         let allAusgaben = [];
         let allEinnahmen = [];
+        let startKontostand = 0;
 
         window.addEventListener("load", loadTables);
+
 
         $('#kategorie-ausgabe-uebersicht').change(() => {
             filterAndDisplayTable('ausgaben');
@@ -227,9 +230,56 @@
             return parts[2] + '.' + parts[1] + '.' + parts[0];
         }
 
+        function berechneKontostand() {
+            let summeEinnahmen = 0;
+            let summeAusgaben = 0;
+
+
+            allEinnahmen.forEach(einnahme => {
+                summeEinnahmen += parseFloat(einnahme.geldbetrag) || 0;
+            });
+
+
+            allAusgaben.forEach(ausgabe => {
+                summeAusgaben += parseFloat(ausgabe.geldbetrag) || 0;
+            });
+
+            const aktuellerKontostand = startKontostand + summeEinnahmen - summeAusgaben;
+            const differenz = aktuellerKontostand - startKontostand;
+
+            const balanceDiffElement = document.getElementById('account-balance-dif');
+
+            document.getElementById('account-balance').textContent = formatGeld(aktuellerKontostand) + ' €';
+
+            balanceDiffElement.textContent = (differenz >= 0 ? '+' : '') + formatGeld(differenz);
+            balanceDiffElement.style.color = differenz < 0 ? '#dc3545' : '';
+            document.getElementById('start-kontostand-display').textContent = ' (' + formatGeld(startKontostand) + ' €)';
+        }
+
         function loadTables() {
             console.log('Tabelle aus backend laden');
 
+            $.ajax({
+                url: 'http://localhost:8000/api/kontostand/alle',
+                method: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+            }).done(function (response) {
+                if (response && response.length > 0) {
+                    startKontostand = parseFloat(response[0].startwert) || 0;
+                }
+
+                loadAusgaben();
+                loadEinnahmen();
+            }).fail(function (jqXHR, statusText, error) {
+                console.log('Fehler beim Laden des Kontostands: ' + jqXHR.responseText);
+
+                loadAusgaben();
+                loadEinnahmen();
+            });
+        }
+
+        function loadAusgaben() {
             $.ajax({
                 url: 'http://localhost:8000/api/ausgabe/alle',
                 method: 'GET',
@@ -238,11 +288,13 @@
             }).done(function (response) {
                 allAusgaben = response;
                 filterAndDisplayTable('ausgaben');
+                berechneKontostand();
             }).fail(function (jqXHR, statusText, error) {
                 console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
-                $('#output').html('Ein Fehler beim Laden der Daten aus der DB ist aufgetreten');
             });
+        }
 
+        function loadEinnahmen() {
             $.ajax({
                 url: 'http://localhost:8000/api/einnahme/alle',
                 method: 'GET',
@@ -251,11 +303,11 @@
             }).done(function (response) {
                 allEinnahmen = response;
                 filterAndDisplayTable('einnahmen');
+                berechneKontostand();
             }).fail(function (jqXHR, statusText, error) {
                 console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
-                $('#output').html('Ein Fehler beim Laden der Daten aus der DB ist aufgetreten');
             });
-        };
+        }
 
         function filterAndDisplayTable(type) {
             if (type === 'ausgaben') {
@@ -318,11 +370,9 @@
                     contentType: 'application/json; charset=utf-8',
                     cache: false,
                 }).done(function (response) {
-                    loadTable();
-                    $('#output').html(response);
+                    loadAusgaben();
                 }).fail(function (jqXHR, statusText, error) {
                     console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
-                    $('#output').html('Ein Fehler beim Löschen des Eintrags aus der DB ist aufgetreten');
                 });
             }
             if ($(this).data('tableid') === 'einnahmen-table') {
@@ -332,11 +382,9 @@
                     contentType: 'application/json; charset=utf-8',
                     cache: false,
                 }).done(function (response) {
-                    loadTable();
-                    $('#output').html(response);
+                    loadEinnahmen();
                 }).fail(function (jqXHR, statusText, error) {
                     console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
-                    $('#output').html('Ein Fehler beim Löschen des Eintrags aus der DB ist aufgetreten');
                 });
             }
         });

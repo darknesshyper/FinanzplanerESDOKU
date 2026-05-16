@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="stylesheet.css">
 </head>
@@ -54,14 +55,16 @@
         <div class="kontostand-card">
             <h3>Kontostand festlegen</h3>
             <p>
-                Gib deinen aktuellen Kontostand ein. Dieser wird als Ausgangswert für alle Berechnungen verwendet.
+                Gib deinen Startkontostand ein. Dieser wird als Ausgangswert für alle Berechnungen verwendet.
             </p>
             <div class="form-group">
                 <label for="start-kontostand">Kontostand in €</label>
-                <input type="text" class="form-control" placeholder="z.B. 2500,00">
+                <input type="text" class="form-control" id="start-kontostand" placeholder="z.B. 2500,00">
             </div>
-            <button type="button" class="btn btn-success w-100"
-                onclick="location.href='kontostandNachSpeichern.html'">Kontostand speichern</button>
+            <div id="message-container"></div>
+            <button type="button" class="btn btn-success w-100" id="btn-speichern">Kontostand speichern</button>
+            <button type="button" class="btn btn-success w-100 mt-2" id="btn-zur-uebersicht" style="display: none;">Zur
+                Übersicht</button>
         </div>
     </div>
 
@@ -72,6 +75,125 @@
             <a href="datenschutzNachAnmelden.html">Datenschutzerklärung</a>
         </div>
     </footer>
+
+    <script>
+        let vorhandeneId = null;
+
+        $(document).ready(function () {
+            ladeKontostand();
+
+            $('#btn-speichern').on('click', speichereKontostand);
+            $('#btn-zur-uebersicht').on('click', function () {
+                location.href = 'uebersicht.html';
+            });
+        });
+
+        function ladeKontostand() {
+            console.log('Lade Kontostand...');
+            $.ajax({
+                url: 'http://localhost:8000/api/kontostand/alle',
+                method: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+            }).done(function (response) {
+                console.log('Kontostand geladen:', response);
+                if (response && response.length > 0) {
+                    $('#start-kontostand').val(response[0].startwert);
+                    vorhandeneId = response[0].id;
+                    console.log('Vorhandene ID gesetzt:', vorhandeneId);
+                }
+            }).fail(function (jqXHR, statusText, error) {
+                console.log('Fehler beim Laden des Kontostands: ' + jqXHR.responseText);
+            });
+        }
+
+        function speichereKontostand() {
+            console.log('Speichern-Button geklickt!');
+            const startwert = $('#start-kontostand').val().trim();
+            const messageContainer = $('#message-container');
+            const btnSpeichern = $('#btn-speichern');
+            const btnZurUebersicht = $('#btn-zur-uebersicht');
+
+            if (!startwert) {
+                messageContainer.html('<div class="alert alert-danger">Bitte geben Sie einen Kontostand ein.</div>');
+                return;
+            }
+
+            const startwertNummer = parseFloat(startwert.replace(',', '.'));
+            if (isNaN(startwertNummer)) {
+                messageContainer.html('<div class="alert alert-danger">Bitte geben Sie eine gültige Zahl ein.</div>');
+                return;
+            }
+
+            btnSpeichern.prop('disabled', true).text('Speichern...');
+            messageContainer.empty();
+
+
+            $.ajax({
+                url: 'http://localhost:8000/api/kontostand/alle',
+                method: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+            }).done(function (checkData) {
+                console.log('Check Daten:', checkData);
+
+                if (checkData && checkData.length > 0) {
+
+                    const updateId = checkData[0].id;
+                    console.log('Update mit ID:', updateId, 'Wert:', startwertNummer);
+                    $.ajax({
+                        url: 'http://localhost:8000/api/kontostand/' + updateId,
+                        method: 'PUT',
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        data: JSON.stringify({
+                            id: updateId,
+                            startwert: startwertNummer
+                        }),
+                        cache: false,
+                    }).done(function (response) {
+                        console.log('Update erfolgreich:', response);
+                        messageContainer.html('<div class="alert alert-success">Kontostand wurde erfolgreich aktualisiert!</div>');
+                        $('#start-kontostand').closest('.form-group').hide();
+                        btnSpeichern.hide();
+                        btnZurUebersicht.show();
+                    }).fail(function (jqXHR, statusText, error) {
+                        console.log('Fehler beim Aktualisieren: ' + jqXHR.responseText);
+                        messageContainer.html('<div class="alert alert-danger">Fehler beim Aktualisieren.</div>');
+                        btnSpeichern.prop('disabled', false).text('Kontostand speichern');
+                    });
+                } else {
+
+                    console.log('Erstelle neuen Kontostand mit Wert:', startwertNummer);
+                    $.ajax({
+                        url: 'http://localhost:8000/api/kontostand',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        data: JSON.stringify({
+                            startwert: startwertNummer
+                        }),
+                        cache: false,
+                    }).done(function (response) {
+                        console.log('Erstellen erfolgreich:', response);
+                        messageContainer.html('<div class="alert alert-success">Kontostand wurde erfolgreich gespeichert!</div>');
+                        $('#start-kontostand').closest('.form-group').hide();
+                        btnSpeichern.hide();
+                        btnZurUebersicht.show();
+                    }).fail(function (jqXHR, statusText, error) {
+                        console.log('Fehler beim Speichern: ' + jqXHR.responseText);
+                        messageContainer.html('<div class="alert alert-danger">Fehler beim Speichern.</div>');
+                        btnSpeichern.prop('disabled', false).text('Kontostand speichern');
+                    });
+                }
+            }).fail(function (jqXHR, statusText, error) {
+                console.log('Fehler beim Prüfen: ' + jqXHR.responseText);
+                messageContainer.html('<div class="alert alert-danger">Fehler beim Prüfen des Kontostands.</div>');
+                btnSpeichern.prop('disabled', false).text('Kontostand speichern');
+            });
+        }
+    </script>
+
 </body>
 
 </html>
