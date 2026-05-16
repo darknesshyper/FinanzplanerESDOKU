@@ -368,13 +368,14 @@ td {
 }
 
 #btn-bearbeiten {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 #btn-bearbeiten button {
-    width: 50%;
+  width: 50%;
 }
+
 /*-----------Temporäres statisches Balkendiagramm--------------*/
 
 .legend {
@@ -498,4 +499,14 @@ tr:hover .action-buttons {
 
 .form-control {
   border-radius: 4px !important;
+}
+
+.alert {
+  border-radius: 4px;
+  text-align: center;
+}
+
+.alert-success {
+  border: none;
+  background-color: lightgreen;
 }

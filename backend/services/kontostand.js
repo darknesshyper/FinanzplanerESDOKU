@@ -5,6 +5,59 @@ var serviceRouter = express.Router();
 
 console.log('- Service Kontostand');
 
+serviceRouter.get('/kontostand/gib', function(request, response) {
+    console.log('Service Kontostand: Client requested current kontostand');
+
+    const kontostandDao = new KontostandDao(request.app.locals.dbConnection);
+    try {
+        var arr = kontostandDao.loadAll();
+        if (arr && arr.length > 0) {
+            console.log('Service Kontostand: Startwert loaded = ' + arr[0].startwert);
+            response.status(200).json({ 'startwert': arr[0].startwert, 'id': arr[0].id });
+        } else {
+            response.status(200).json({ 'startwert': 0, 'id': null });
+        }
+    } catch (ex) {
+        console.error('Service Kontostand: Error loading kontostand. Exception occured: ' + ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
+    }
+});
+
+serviceRouter.put('/kontostand', function(request, response) {
+    console.log('Service Kontostand: Client requested to update kontostand');
+
+    var errorMsgs = [];
+    if (helper.isUndefined(request.body.startwert)) 
+        errorMsgs.push('startwert fehlt');
+
+    if (errorMsgs.length > 0) {
+        console.log('Service Kontostand: update not possible, data missing');
+        response.status(400).json({ 'fehler': true, 'nachricht': 'Funktion nicht möglich. Fehlende Daten: ' + helper.concatArray(errorMsgs) });
+        return;
+    }
+
+    const kontostandDao = new KontostandDao(request.app.locals.dbConnection);
+    try {
+        var arr = kontostandDao.loadAll();
+        var startwert = parseFloat(request.body.startwert);
+        
+        if (arr && arr.length > 0) {
+            // Update existing
+            var result = kontostandDao.update(arr[0].id, startwert);
+            console.log('Service Kontostand: Record updated, new startwert=' + result.startwert);
+            response.status(200).json({ 'startwert': result.startwert, 'nachricht': 'Kontostand erfolgreich gespeichert' });
+        } else {
+            // Create new
+            var result = kontostandDao.create(startwert);
+            console.log('Service Kontostand: Record created, new startwert=' + result.startwert);
+            response.status(200).json({ 'startwert': result.startwert, 'nachricht': 'Kontostand erfolgreich gespeichert' });
+        }
+    } catch (ex) {
+        console.error('Service Kontostand: Error updating record. Exception occured: ' + ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
+    }
+});
+
 serviceRouter.get('/kontostand/gib/:id', function(request, response) {
     console.log('Service Kontostand: Client requested one record, id=' + request.params.id);
 
