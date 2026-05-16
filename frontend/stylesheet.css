@@ -273,6 +273,11 @@ td {
   height: 429.4px;
 }
 
+.chart-scroll-wrapper {
+  overflow-x: auto !important;  /* ← nur hier scrollen */
+  overflow-y: hidden;
+}
+
 .piechart_ausgaben {
   width: 300px;
   height: 300px;
@@ -400,23 +405,30 @@ td {
 
 .chart-row {
   display: flex;
-  align-items: flex-end;
-  border-bottom: 1px solid #333;
+  align-items: flex-start; /* Zwingt Achse und Diagramm auf dieselbe Bodenhöhe */
+  position: relative;
+  overflow: visible;
 }
 
 .y-labels {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 220px;
-  padding-bottom: 1px;
-  margin-right: 12px;
+  height: 220px;       /* Exakt dieselbe Höhe wie .barchart */
+  width: 55px;         /* Gibt den Labels genug Breite für "1000€" ohne Scrollbar */
+  text-align: right;   /* Richte die Zahlen schön rechtsbündig zur Achse aus */
+  margin-right: 8px;   /* Abstand zum Diagramm */
+  flex-shrink: 0;      /* Verhindert, dass die Achse zusammengedrückt wird */
+  overflow: visible !important;   /* Schneidet garantiert nichts ab */
 }
 
 .y-labels span {
   color: #bbb;
-  line-height: 1;
-  overflow-x: visible;
+  font-size: 0.85rem;  
+  line-height: 1;      
+  display: block;
+  overflow: visible !important; /* Verhindert die komischen Pfeile komplett */
+  white-space: nowrap;
 }
 
 .barchart {
@@ -424,9 +436,11 @@ td {
   display: flex;
   align-items: flex-end;
   height: 220px;
-  gap: 32px;
-  border-bottom: 1px solid #e2dfd8;
+  gap: 0;
+  border-bottom: 2px solid #bbb; /* Eine klare, dunkle Null-Linie direkt am Diagramm */
   position: relative;
+  overflow-x: visible;
+  min-width: max-content;
 }
 
 .group {
@@ -438,11 +452,15 @@ td {
   height: 100%;
   position: relative;
   z-index: 1;
+  flex-shrink: 0;
+  width: 90px;
+
 }
 
 .bar {
   width: 36%;
   border-radius: 4px 4px 0 0;
+  flex-shrink: 0;
 }
 
 .red {
@@ -455,15 +473,20 @@ td {
 
 .months {
   display: flex;
-  gap: 32px;
+  gap: 0;
   margin-top: 10px;
+  overflow-x: visible;
+  min-width: max-content;
 }
 
 .months span {
+  width: 90px;
   flex: 1;
   text-align: center;
   color: #999;
+  font-size: 0.8rem;
   letter-spacing: 0.03em;
+  min-width: 50px;
 }
 
 .disabled-link {
