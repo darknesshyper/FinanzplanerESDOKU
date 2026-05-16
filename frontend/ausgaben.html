@@ -367,6 +367,14 @@
             filterAndDisplayTable();
         });
 
+        $('#uebersicht-month').change(() => {
+            filterAndDisplayTable();
+        });
+
+        $('#uebersicht-year').change(() => {
+            filterAndDisplayTable();
+        });
+
         function formatGeld(zahl) {
             return parseFloat(zahl).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
@@ -403,6 +411,45 @@
             if (selectedCategory !== 'all') {
                 filteredData = allAusgaben.filter(item => item.kategorie === selectedCategory);
             }
+
+            const selectedMonth = $('#uebersicht-month').val();
+            console.log('Monatsfilter: ' + selectedMonth);
+         
+            if(selectedMonth !== 'all') {
+                const monthMap = {
+                    'jan': '01',
+                    'feb': '02',
+                    'mar': '03',
+                    'apr': '04',
+                    'mai': '05',
+                    'jun': '06',
+                    'jul': '07',
+                    'aug': '08',
+                    'sep': '09',
+                    'okt': '10',
+                    'nov': '11',
+                    'dez': '12'
+                };
+                const monthNum = monthMap[selectedMonth];
+                filteredData = filteredData.filter(item => item.datum.split('-')[1] === monthNum);
+            }
+
+            const selectedYear = $('#uebersicht-year').val();
+            console.log('Jahresfilter: ' + selectedYear);
+         
+            if(selectedYear !== 'all') {
+                const yearMap = {
+                    '2026': '2026',
+                    '2025': '2025',
+                    '2024': '2024',
+                    '2023': '2023',
+                    '2022': '2022'
+                };
+                const yearNum = yearMap[selectedYear];
+                filteredData = filteredData.filter(item => item.datum.split('-')[0] === yearNum);
+            }
+
+            filteredData = filteredData.slice().sort((a, b) => new Date(b.datum) - new Date(a.datum))
 
             refreshTable(filteredData);
         }
