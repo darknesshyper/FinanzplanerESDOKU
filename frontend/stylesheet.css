@@ -274,7 +274,7 @@ td {
 }
 
 .chart-scroll-wrapper {
-  overflow-x: auto !important;  /* ← nur hier scrollen */
+  overflow-x: auto !important; 
   overflow-y: hidden;
 }
 
@@ -405,7 +405,7 @@ td {
 
 .chart-row {
   display: flex;
-  align-items: flex-start; /* Zwingt Achse und Diagramm auf dieselbe Bodenhöhe */
+  align-items: flex-start; 
   position: relative;
   overflow: visible;
 }
@@ -414,12 +414,12 @@ td {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 220px;       /* Exakt dieselbe Höhe wie .barchart */
-  width: 55px;         /* Gibt den Labels genug Breite für "1000€" ohne Scrollbar */
-  text-align: right;   /* Richte die Zahlen schön rechtsbündig zur Achse aus */
-  margin-right: 8px;   /* Abstand zum Diagramm */
-  flex-shrink: 0;      /* Verhindert, dass die Achse zusammengedrückt wird */
-  overflow: visible !important;   /* Schneidet garantiert nichts ab */
+  height: 220px; 
+  width: 55px;         
+  text-align: right;   
+  margin-right: 12px;  
+  flex-shrink: 0;     
+  overflow: visible !important;  
 }
 
 .y-labels span {
@@ -427,7 +427,7 @@ td {
   font-size: 0.85rem;  
   line-height: 1;      
   display: block;
-  overflow: visible !important; /* Verhindert die komischen Pfeile komplett */
+  overflow: visible !important;
   white-space: nowrap;
 }
 
@@ -437,7 +437,7 @@ td {
   align-items: flex-end;
   height: 220px;
   gap: 0;
-  border-bottom: 2px solid #bbb; /* Eine klare, dunkle Null-Linie direkt am Diagramm */
+  border-bottom: 2px solid #bbb;
   position: relative;
   overflow-x: visible;
   min-width: max-content;
