@@ -320,7 +320,10 @@
                     filteredData = allAusgaben.filter(item => item.kategorie === selectedCategory);
                 }
 
-                refreshTable(filteredData, 'ausgaben-table');
+            filteredData = filteredData.slice().sort((a, b) => new Date(b.datum) - new Date(a.datum))
+
+            refreshTable(filteredData, 'ausgaben-table');
+            
             } else if (type === 'einnahmen') {
                 const selectedCategory = $('#kategorie-einnahme-uebersicht').val();
                 console.log('Einnahmen-Filter angewendet: ' + selectedCategory);
@@ -331,7 +334,10 @@
                     filteredData = allEinnahmen.filter(item => item.kategorie === selectedCategory);
                 }
 
-                refreshTable(filteredData, 'einnahmen-table');
+            filteredData = filteredData.slice().sort((a, b) => new Date(b.datum) - new Date(a.datum))
+
+            refreshTable(filteredData, 'einnahmen-table');
+            
             }
         }
 
