@@ -55,7 +55,7 @@
 
     <div class="page-container">
         <div class="transaction-card me-lg-4 mb-4">
-            <h3>Neue Ausgabe hinzufügen</h3>
+            <h3 id="ausgabe-heading">Neue Ausgabe hinzufügen</h3>
             <div class="form-group">
                 <label for="bezeichnung-ausgabe">Bezeichnung</label>
                 <input type="text" id="bezeichnung-ausgabe" class="form-control" placeholder="z.B. Kartoffeln">
@@ -90,6 +90,10 @@
                 <input type="date" id="datum-ausgabe" class="form-control">
             </div>
             <button id="ausgabe-hinzufuegen" type="button" class="btn btn-success w-100">Hinzufügen</button>
+            <div id="btn-bearbeiten" style="display:none">
+                <button id="ausgabe-speichern" type="button" class="btn btn-success w-100">Änderung speichern</button>
+                <button id="ausgabe-verwerfen" type="button" class="btn btn-success w-100">Änderung verwerfen</button>
+            </div>
         </div>
 
         <div class="transaction-card">
@@ -269,7 +273,8 @@
                     </div>
                 </div>-->
                 <hr style="margin: 25px auto 12px; border: none; border-top: 1px solid #333; width: 80%;">
-                <div id="ausgaben-gesamt" style="font-weight: bold; color: #333; text-align: center; margin-bottom: 10px;"></div>
+                <div id="ausgaben-gesamt"
+                    style="font-weight: bold; color: #333; text-align: center; margin-bottom: 10px;"></div>
             </div>
         </div>
     </div>
@@ -292,7 +297,7 @@
 
         function markAusgabenFieldsAsError(errorMsg) {
             clearAusgabenErrors();
-            
+
             if (errorMsg.includes('bezeichnung')) {
                 $('#bezeichnung-ausgabe').addClass('error');
             }
@@ -309,7 +314,7 @@
 
         $('#ausgabe-hinzufuegen').click(function () {
             console.log('Ausgabe hinzufügen Button geklickt');
-            
+
             clearAusgabenErrors();
 
             var bezeichnung = $('#bezeichnung-ausgabe').val();
@@ -344,7 +349,7 @@
                 $('#output').html(response);
             }).fail(function (jqXHR, statusText, error) {
                 console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
-                
+
                 try {
                     const errorResponse = JSON.parse(jqXHR.responseText);
                     if (errorResponse.nachricht) {
@@ -353,7 +358,7 @@
                 } catch (e) {
                     console.error('Fehler beim Parsen der Fehlermeldung:', e);
                 }
-                
+
                 $('#output').html('Ein Fehler ist aufgetreten');
             });
         });
@@ -414,8 +419,8 @@
 
             const selectedMonth = $('#uebersicht-month').val();
             console.log('Monatsfilter: ' + selectedMonth);
-         
-            if(selectedMonth !== 'all') {
+
+            if (selectedMonth !== 'all') {
                 const monthMap = {
                     'jan': '01',
                     'feb': '02',
@@ -436,8 +441,8 @@
 
             const selectedYear = $('#uebersicht-year').val();
             console.log('Jahresfilter: ' + selectedYear);
-         
-            if(selectedYear !== 'all') {
+
+            if (selectedYear !== 'all') {
                 const yearMap = {
                     '2026': '2026',
                     '2025': '2025',
@@ -468,7 +473,7 @@
                     <td>${response[i].kategorie}</td>
                     <td>${formatDatum(response[i].datum)}</td>
                     <td class="action-buttons">
-                        <button class="btn btn-sm btn-outline-primary me-1" title="Bearbeiten">
+                        <button class="btn btn-sm btn-outline-primary me-1 btn-edit" data-id="${response[i].id}" title="Bearbeiten">
                             <i class="bi bi-pencil"></i>
                         </button>
                         <button class="btn btn-sm btn-outline-danger btn-delete" title="Löschen" data-id="${response[i].id}">
@@ -570,9 +575,76 @@
             const gesamtFormatiert = gesamt.toLocaleString('de-DE', {
                 minimumFractionDigits: 2, maximumFractionDigits: 2
             });
-           document.getElementById('ausgaben-gesamt').innerHTML =
-            `<span>Gesamt: ${gesamtFormatiert} €</span>`;
+            document.getElementById('ausgaben-gesamt').innerHTML =
+                `<span>Gesamt: ${gesamtFormatiert} €</span>`;
         }
+
+        $(document).on('click', '.btn-edit', function () {
+            $.ajax({
+                url: 'http://localhost:8000/api/ausgabe/gib/' + $(this).data('id'),
+                method: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+            }).done(function (response) {
+                ausgabe = response;
+
+                document.querySelector('#ausgabe-heading').innerHTML = 'Ausgabe bearbeiten';
+                document.querySelector('#bezeichnung-ausgabe').value = ausgabe.bezeichnung;
+                document.querySelector('#betrag-ausgabe').value = ausgabe.geldbetrag;
+                document.querySelector('#kategorie-ausgabe').value = ausgabe.kategorie;
+                document.querySelector('#datum-ausgabe').value = ausgabe.datum;
+
+                document.querySelector('#ausgabe-hinzufuegen').style.display = 'none';
+                document.querySelector('#btn-bearbeiten').style.display = '';
+
+                $('#output').html(response);
+            }).fail(function (jqXHR, statusText, error) {
+                console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                $('#output').html('Ein Fehler beim Laden des Eintrags aus der DB ist aufgetreten');
+            });
+
+            $(document).on('click', '#ausgabe-speichern', function () {
+                $.ajax({
+                    url: 'http://localhost:8000/api/ausgabe',
+                    method: 'PUT',
+                    contentType: 'application/json; charset=utf-8',
+                    cache: false,
+                    data: JSON.stringify({
+                        id: ausgabe.id,
+                        bezeichnung: $('#bezeichnung-ausgabe').val(),
+                        geldbetrag: $('#betrag-ausgabe').val(),
+                        kategorie: $('#kategorie-ausgabe').val(),
+                        datum: $('#datum-ausgabe').val()
+                    })
+                }).done(function (response) {
+                    document.querySelector('#ausgabe-heading').innerHTML = 'Neue Ausgabe hinzufügen';
+                    document.querySelector('#bezeichnung-ausgabe').value = '';
+                    document.querySelector('#betrag-ausgabe').value = '';
+                    document.querySelector('#kategorie-ausgabe').value = '';
+                    document.querySelector('#datum-ausgabe').value = '';
+                    loadTable();
+                    document.querySelector('#ausgabe-hinzufuegen').style.display = '';
+                    document.querySelector('#btn-bearbeiten').style.display = 'none';
+                    $('#output').html(response);
+                }).fail(function (jqXHR, statusText, error) {
+                    console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                    $('#output').html('Ein Fehler beim Laden des Eintrags aus der DB ist aufgetreten');
+                });
+            });
+
+            $(document).on('click', '#ausgabe-verwerfen', function () {
+
+                document.querySelector('#ausgabe-heading').innerHTML = 'Neue Ausgabe hinzufügen';
+                document.querySelector('#bezeichnung-ausgabe').value = '';
+                document.querySelector('#betrag-ausgabe').value = '';
+                document.querySelector('#kategorie-ausgabe').value = '';
+                document.querySelector('#datum-ausgabe').value = '';
+                loadTable();
+                document.querySelector('#ausgabe-hinzufuegen').style.display = '';
+                document.querySelector('#btn-bearbeiten').style.display = 'none';
+                $('#output').html(response);
+            });
+        });
     </script>
 </body>
 
