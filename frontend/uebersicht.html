@@ -117,7 +117,7 @@
                 <span><span class="dot" style="background:#27ae60;"></span>Einnahmen</span>
             </div>
 
-           <div class="chart-row">
+            <div class="chart-row">
                 <div class="y-labels" id="y-labels">
                     <!--<span>1000€</span>
                     <span>800€</span>
@@ -130,7 +130,7 @@
                     <div class="months"></div>
                 </div>
             </div>
-                <!--<div style="flex:1; display:flex; flex-direction:column;">
+            <!--<div style="flex:1; display:flex; flex-direction:column;">
                     <div class="barchart">
                         <div class="group">
                             <div class="bar red" style="height:136px;"></div>
@@ -330,10 +330,10 @@
                     filteredData = allAusgaben.filter(item => item.kategorie === selectedCategory);
                 }
 
-            filteredData = filteredData.slice().sort((a, b) => new Date(b.datum) - new Date(a.datum))
+                filteredData = filteredData.slice().sort((a, b) => new Date(b.datum) - new Date(a.datum))
 
-            refreshTable(filteredData, 'ausgaben-table');
-            
+                refreshTable(filteredData, 'ausgaben-table');
+
             } else if (type === 'einnahmen') {
                 const selectedCategory = $('#kategorie-einnahme-uebersicht').val();
                 console.log('Einnahmen-Filter angewendet: ' + selectedCategory);
@@ -344,10 +344,10 @@
                     filteredData = allEinnahmen.filter(item => item.kategorie === selectedCategory);
                 }
 
-            filteredData = filteredData.slice().sort((a, b) => new Date(b.datum) - new Date(a.datum))
+                filteredData = filteredData.slice().sort((a, b) => new Date(b.datum) - new Date(a.datum))
 
-            refreshTable(filteredData, 'einnahmen-table');
-            
+                refreshTable(filteredData, 'einnahmen-table');
+
             }
         }
 
@@ -365,7 +365,7 @@
                     <td>${response[i].kategorie}</td>
                     <td>${formatDatum(response[i].datum)}</td>
                     <td class="action-buttons">
-                        <button class="btn btn-sm btn-outline-primary me-1" title="Bearbeiten">
+                        <button class="btn btn-sm btn-outline-primary me-1 btn-edit" data-id="${response[i].id}" data-type="${tabellenID === 'ausgaben-table' ? 'ausgabe' : 'einnahme'}" title="Bearbeiten">
                             <i class="bi bi-pencil"></i>
                         </button>
                         <button class="btn btn-sm btn-outline-danger btn-delete" data-id="${response[i].id}" data-tableid="${tabellenID}" title="Löschen">
@@ -376,6 +376,19 @@
                 tbody.appendChild(tr);
             }
         };
+
+        $(document).off('click', '.btn-edit').on('click', '.btn-edit', function () {
+            const id = $(this).data('id');
+            const type = $(this).data('type');
+
+            console.log('edit: ' + id + ', Type: ' + type);
+
+            if (type === 'ausgabe') {
+                window.location.href = 'ausgaben.html?edit=' + id;
+            } else if (type === 'einnahme') {
+                window.location.href = 'einnahmen.html?edit=' + id;
+            }
+        });
 
         $(document).on('click', '.btn-delete', function () {
             console.log('delete: ' + $(this).data('id') + ' tabellenname: ' + $(this).data('tableid'));
@@ -419,11 +432,11 @@
             // Welche Monate sollen angezeigt werden?
             let monate = [];
             if (selectedMonth === 'all') {
-                monate = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+                monate = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
             } else {
                 const monthMap = {
-                    'jan':'01','feb':'02','mar':'03','apr':'04','mai':'05','jun':'06',
-                    'jul':'07','aug':'08','sep':'09','okt':'10','nov':'11','dez':'12'
+                    'jan': '01', 'feb': '02', 'mar': '03', 'apr': '04', 'mai': '05', 'jun': '06',
+                    'jul': '07', 'aug': '08', 'sep': '09', 'okt': '10', 'nov': '11', 'dez': '12'
                 };
                 monate = [monthMap[selectedMonth]];
             }
