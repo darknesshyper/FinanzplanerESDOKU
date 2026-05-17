@@ -115,13 +115,13 @@
             const btnZurUebersicht = $('#btn-zur-uebersicht');
 
             if (!startwert) {
-                messageContainer.html('<div class="alert alert-danger">Bitte geben Sie einen Kontostand ein.</div>');
+                messageContainer.html('<div class="alert alert-danger"><strong>Bitte geben Sie einen Kontostand ein.</strong></div>');
                 return;
             }
 
             const startwertNummer = parseFloat(startwert.replace(',', '.'));
             if (isNaN(startwertNummer)) {
-                messageContainer.html('<div class="alert alert-danger">Bitte geben Sie eine gültige Zahl ein.</div>');
+                messageContainer.html('<div class="alert alert-danger"><strong>Bitte geben Sie eine gültige Zahl ein.</strong></div>');
                 return;
             }
 
@@ -153,13 +153,13 @@
                         cache: false,
                     }).done(function (response) {
                         console.log('Update erfolgreich:', response);
-                        messageContainer.html('<div class="alert alert-success">Kontostand wurde erfolgreich aktualisiert!</div>');
+                        messageContainer.html('<div class="alert alert-success"><strong>Kontostand wurde erfolgreich aktualisiert!</strong></div>');
                         $('#start-kontostand').closest('.form-group').hide();
                         btnSpeichern.hide();
                         btnZurUebersicht.show();
                     }).fail(function (jqXHR, statusText, error) {
                         console.log('Fehler beim Aktualisieren: ' + jqXHR.responseText);
-                        messageContainer.html('<div class="alert alert-danger">Fehler beim Aktualisieren.</div>');
+                        messageContainer.html('<div class="alert alert-danger"><strong>Fehler beim Aktualisieren.</strong></div>');
                         btnSpeichern.prop('disabled', false).text('Kontostand speichern');
                     });
                 } else {
@@ -176,19 +176,19 @@
                         cache: false,
                     }).done(function (response) {
                         console.log('Erstellen erfolgreich:', response);
-                        messageContainer.html('<div class="alert alert-success">Kontostand wurde erfolgreich gespeichert!</div>');
+                        messageContainer.html('<div class="alert alert-success"><strong>Kontostand wurde erfolgreich gespeichert!</strong></div>');
                         $('#start-kontostand').closest('.form-group').hide();
                         btnSpeichern.hide();
                         btnZurUebersicht.show();
                     }).fail(function (jqXHR, statusText, error) {
                         console.log('Fehler beim Speichern: ' + jqXHR.responseText);
-                        messageContainer.html('<div class="alert alert-danger">Fehler beim Speichern.</div>');
+                        messageContainer.html('<div class="alert alert-danger"><strong>Fehler beim Speichern.</strong></div>');
                         btnSpeichern.prop('disabled', false).text('Kontostand speichern');
                     });
                 }
             }).fail(function (jqXHR, statusText, error) {
                 console.log('Fehler beim Prüfen: ' + jqXHR.responseText);
-                messageContainer.html('<div class="alert alert-danger">Fehler beim Prüfen des Kontostands.</div>');
+                messageContainer.html('<div class="alert alert-danger"><strong>Fehler beim Prüfen des Kontostands.</strong></div>');
                 btnSpeichern.prop('disabled', false).text('Kontostand speichern');
             });
         }
