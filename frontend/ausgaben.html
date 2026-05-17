@@ -401,6 +401,16 @@
             }).done(function (response) {
                 allAusgaben = response;
                 filterAndDisplayTable();
+
+                const params = new URLSearchParams(window.location.search);
+                const editId = params.get('edit');
+                if (editId) {
+                    setTimeout(() => {
+                        $(`button.btn-edit[data-id="${editId}"]`).click();
+
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }, 100);
+                }
             }).fail(function (jqXHR, statusText, error) {
                 console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
                 $('#output').html('Ein Fehler beim Laden der Daten aus der DB ist aufgetreten');
