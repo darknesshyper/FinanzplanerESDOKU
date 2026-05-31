@@ -21,6 +21,17 @@ class AusgabeDao {
         return result;
     }
 
+    loadAllByBenutzer(benutzerId) {
+        var sql = 'SELECT * FROM Ausgabe WHERE benutzerId=?';
+        var statement = this._conn.prepare(sql);
+        var result = statement.all(benutzerId);
+
+        if (helper.isArrayEmpty(result))
+            return [];
+
+        return result;
+    }
+
     loadAll() {
         var sql = 'SELECT * FROM Ausgabe';
         var statement = this._conn.prepare(sql);
@@ -43,10 +54,10 @@ class AusgabeDao {
         return false;
     }
 
-    create(bezeichnung = '', geldbetrag = 0, kategorie = '', datum = '') {
-        var sql = 'INSERT INTO Ausgabe (bezeichnung, geldbetrag, kategorie, datum) VALUES (?,?,?,?)';
+    create(benutzerId, bezeichnung = '', geldbetrag = 0, kategorie = '', datum = '') {
+        var sql = 'INSERT INTO Ausgabe (benutzerId, bezeichnung, geldbetrag, kategorie, datum) VALUES (?,?,?,?,?)';
         var statement = this._conn.prepare(sql);
-        var params = [bezeichnung, geldbetrag, kategorie, datum];
+        var params = [benutzerId, bezeichnung, geldbetrag, kategorie, datum];
         var result = statement.run(params);
 
         if (result.changes != 1)

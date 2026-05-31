@@ -21,6 +21,17 @@ class KontostandDao {
         return result;
     }
 
+    loadAllByBenutzer(benutzerId) {
+        var sql = 'SELECT * FROM Kontostand WHERE benutzerId=?';
+        var statement = this._conn.prepare(sql);
+        var result = statement.all(benutzerId);
+
+        if (helper.isArrayEmpty(result))
+            return [];
+
+        return result;
+    }
+
     loadAll() {
         var sql = 'SELECT * FROM Kontostand';
         var statement = this._conn.prepare(sql);
@@ -43,10 +54,10 @@ class KontostandDao {
         return false;
     }
 
-    create(startwert = '') {
-        var sql = 'INSERT INTO Kontostand (startwert) VALUES (?)';
+    create(benutzerId, startwert = '') {
+        var sql = 'INSERT INTO Kontostand (benutzerId, startwert) VALUES (?, ?)';
         var statement = this._conn.prepare(sql);
-        var params = [startwert];
+        var params = [benutzerId, startwert];
         var result = statement.run(params);
 
         if (result.changes != 1)

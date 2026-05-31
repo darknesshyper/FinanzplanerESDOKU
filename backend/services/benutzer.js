@@ -5,7 +5,7 @@ var serviceRouter = express.Router();
 
 console.log('- Service Benutzer');
 
-serviceRouter.get('/benutzer/gib/:id', function(request, response) {
+serviceRouter.get('/benutzer/gib/:id', function (request, response) {
     console.log('Service Benutzer: Client requested one record, id=' + request.params.id);
 
     const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
@@ -19,7 +19,7 @@ serviceRouter.get('/benutzer/gib/:id', function(request, response) {
     }
 });
 
-serviceRouter.get('/benutzer/alle', function(request, response) {
+serviceRouter.get('/benutzer/alle', function (request, response) {
     console.log('Service Benutzer: Client requested all records');
 
     const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
@@ -33,7 +33,7 @@ serviceRouter.get('/benutzer/alle', function(request, response) {
     }
 });
 
-serviceRouter.get('/benutzer/existiert/:id', function(request, response) {
+serviceRouter.get('/benutzer/existiert/:id', function (request, response) {
     console.log('Service Benutzer: Client requested check, if record exists, id=' + request.params.id);
 
     const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
@@ -47,12 +47,12 @@ serviceRouter.get('/benutzer/existiert/:id', function(request, response) {
     }
 });
 
-serviceRouter.get('/benutzer/eindeutig/:benutzername', function(request, response) {
-    console.log('Service Benutzer: Client requested check, if username is unique', request.params.benutzername);
+serviceRouter.get('/benutzer/eindeutig/:email', function (request, response) {
+    console.log('Service Benutzer: Client requested check, if email is unique', request.params.email);
 
-    var errorMsgs=[];
-    if (helper.isUndefined(request.params.benutzername)) 
-        errorMsgs.push('benutzername fehlt');
+    var errorMsgs = [];
+    if (helper.isUndefined(request.params.email))
+        errorMsgs.push('email fehlt');
 
     if (errorMsgs.length > 0) {
         console.log('Service Benutzer: check not possible, data missing');
@@ -62,22 +62,22 @@ serviceRouter.get('/benutzer/eindeutig/:benutzername', function(request, respons
 
     const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
     try {
-        var unique = benutzerDao.isunique(request.params.benutzername);
+        var unique = benutzerDao.isunique(request.params.email);
         console.log('Service Benutzer: Check if unique, unique=' + unique);
-        response.status(200).json({ 'benutzername': request.body.benutzername, 'eindeutig': unique });
+        response.status(200).json({ 'email': request.params.email, 'eindeutig': unique });
     } catch (ex) {
         console.error('Service Benutzer: Error checking if unique. Exception occured: ' + ex.message);
         response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
     }
 });
 
-serviceRouter.get('/benutzer/check/:benutzername/:passwort', function(request, response) {
-    console.log('Service Benutzer: Client requested check, if user has access for/with', request.params.benutzername, request.params.passwort);
+serviceRouter.get('/benutzer/check/:email/:passwort', function (request, response) {
+    console.log('Service Benutzer: Client requested check, if user has access for/with', request.params.email, request.params.passwort);
 
-    var errorMsgs=[];
-    if (helper.isUndefined(request.params.benutzername)) 
-        errorMsgs.push('benutzername fehlt');
-    if (helper.isUndefined(request.params.passwort)) 
+    var errorMsgs = [];
+    if (helper.isUndefined(request.params.email))
+        errorMsgs.push('email fehlt');
+    if (helper.isUndefined(request.params.passwort))
         errorMsgs.push('passwort fehlt');
 
     if (errorMsgs.length > 0) {
@@ -88,7 +88,7 @@ serviceRouter.get('/benutzer/check/:benutzername/:passwort', function(request, r
 
     const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
     try {
-        var hasaccess = benutzerDao.hasaccess(request.params.benutzername, request.params.passwort);
+        var hasaccess = benutzerDao.hasaccess(request.params.email, request.params.passwort);
         console.log('Service Benutzer: Check if user has access, hasaccess=' + hasaccess);
         response.status(200).json(hasaccess);
     } catch (ex) {
@@ -97,27 +97,17 @@ serviceRouter.get('/benutzer/check/:benutzername/:passwort', function(request, r
     }
 });
 
-serviceRouter.post('/benutzer', function(request, response) {
+serviceRouter.post('/benutzer', function (request, response) {
     console.log('Service Benutzer: Client requested creation of new record');
 
-    var errorMsgs=[];
-    if (helper.isUndefined(request.body.benutzername)) 
-        errorMsgs.push('benutzername fehlt');
-    if (helper.isUndefined(request.body.passwort)) 
+    var errorMsgs = [];
+    if (helper.isUndefined(request.body.name))
+        errorMsgs.push('name fehlt');
+    if (helper.isUndefined(request.body.email))
+        errorMsgs.push('email fehlt');
+    if (helper.isUndefined(request.body.passwort))
         errorMsgs.push('passwort fehlt');
-    if (helper.isUndefined(request.body.benutzerrolle)) {
-        errorMsgs.push('benutzerrolle fehlt');
-    } else if (helper.isUndefined(request.body.benutzerrolle.id)) {
-        errorMsgs.push('benutzerrolle gesetzt, aber id fehlt');
-    }        
-    if (helper.isUndefined(request.body.person)) {
-        request.body.person = null;
-    } else if (helper.isUndefined(request.body.person.id)) {
-        errorMsgs.push('person gesetzt, aber id fehlt');
-    } else {
-        request.body.person = request.body.person.id;
-    }
-    
+
     if (errorMsgs.length > 0) {
         console.log('Service Benutzer: Creation not possible, data missing');
         response.status(400).json({ 'fehler': true, 'nachricht': 'Funktion nicht möglich. Fehlende Daten: ' + helper.concatArray(errorMsgs) });
@@ -126,7 +116,7 @@ serviceRouter.post('/benutzer', function(request, response) {
 
     const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
     try {
-        var obj = benutzerDao.create(request.body.benutzername, request.body.passwort, request.body.benutzerrolle.id, request.body.person);
+        var obj = benutzerDao.create(request.body.name, request.body.email, request.body.passwort);
         console.log('Service Benutzer: Record inserted');
         response.status(200).json(obj);
     } catch (ex) {
@@ -135,28 +125,18 @@ serviceRouter.post('/benutzer', function(request, response) {
     }
 });
 
-serviceRouter.put('/benutzer', function(request, response) {
+serviceRouter.put('/benutzer', function (request, response) {
     console.log('Service Benutzer: Client requested update of existing record');
 
-    var errorMsgs=[];
-    if (helper.isUndefined(request.body.id)) 
+    var errorMsgs = [];
+    if (helper.isUndefined(request.body.id))
         errorMsgs.push('id fehlt');
-    if (helper.isUndefined(request.body.benutzername)) 
-        errorMsgs.push('benutzername fehlt');
-    if (helper.isUndefined(request.body.neuespasswort)) 
+    if (helper.isUndefined(request.body.name))
+        errorMsgs.push('name fehlt');
+    if (helper.isUndefined(request.body.email))
+        errorMsgs.push('email fehlt');
+    if (helper.isUndefined(request.body.neuespasswort))
         request.body.neuespasswort = null;
-    if (helper.isUndefined(request.body.benutzerrolle)) {
-        errorMsgs.push('benutzerrolle fehlt');
-    } else if (helper.isUndefined(request.body.benutzerrolle.id)) {
-        errorMsgs.push('benutzerrolle gesetzt, aber id fehlt');
-    }        
-    if (helper.isUndefined(request.body.person)) {
-        request.body.person = null;
-    } else if (helper.isUndefined(request.body.person.id)) {
-        errorMsgs.push('person gesetzt, aber id fehlt');
-    } else {
-        request.body.person = request.body.person.id;
-    }
 
     if (errorMsgs.length > 0) {
         console.log('Service Benutzer: Update not possible, data missing');
@@ -166,16 +146,16 @@ serviceRouter.put('/benutzer', function(request, response) {
 
     const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
     try {
-        var obj = benutzerDao.update(request.body.id, request.body.benutzername, request.body.neuespasswort, request.body.benutzerrolle.id, request.body.person);
+        var obj = benutzerDao.update(request.body.id, request.body.name, request.body.email, request.body.neuespasswort);
         console.log('Service Benutzer: Record updated, id=' + request.body.id);
         response.status(200).json(obj);
     } catch (ex) {
         console.error('Service Benutzer: Error updating record by id. Exception occured: ' + ex.message);
         response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
-    }    
+    }
 });
 
-serviceRouter.delete('/benutzer/:id', function(request, response) {
+serviceRouter.delete('/benutzer/:id', function (request, response) {
     console.log('Service Benutzer: Client requested deletion of record, id=' + request.params.id);
 
     const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
