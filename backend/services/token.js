@@ -15,13 +15,13 @@ console.log('- Service Token');
 serviceRouter.get('/token/authenticate', function(request, response) {
     console.log('Service Token: Client requests authentication of credentials');
 
-    var un = request.headers['credentials-username'].trim();
+    var un = request.headers['credentials-email'].trim();
     var pw = request.headers['credentials-password'].trim();
 
     // check if credentials in header
     var errorMsgs=[];
     if (helper.isUndefined(un)) 
-        errorMsgs.push('benutzername fehlt');
+        errorMsgs.push('email fehlt');
     if (helper.isUndefined(pw)) 
         errorMsgs.push('passwort fehlt');
     
@@ -81,9 +81,9 @@ serviceRouter.get('/token/validate', function(request, response) {
         console.log('Service Token: Token correctly decoded, so its valid, iat/exp', decoded.iat, decoded.exp);
 
         // now we can check if correct structure is in decoded data
-        // has to start with attribute data and has to contain data.id and data.person
+        // has to start with attribute data and has to contain data.id and data.email
 
-        if (helper.isUndefined(decoded.data) || helper.isUndefined(decoded.data.id) || helper.isUndefined(decoded.data.person)) {
+        if (helper.isUndefined(decoded.data) || helper.isUndefined(decoded.data.id) || helper.isUndefined(decoded.data.email)) {
             console.log('Service Token: Validation failed, Format of payload is incorrect');
             response.status(400).json({ 'fehler': true, 'nachricht': 'Validation failed, Format of Payload is incorrect' });
             return;
@@ -91,7 +91,7 @@ serviceRouter.get('/token/validate', function(request, response) {
 
         // here we could do all other kind of checks, like verifying against the database but thats enough. Lets just modify the data a bit and send it back as successfull response
         delete decoded.data.passwort;
-        console.log('Service Token: Token fully validated id, username', decoded.data.id, decoded.data.benutzername);
+        console.log('Service Token: Token fully validated id, email', decoded.data.id, decoded.data.email);
 
         response.status(200).json(decoded.data);
     } catch (ex) {
