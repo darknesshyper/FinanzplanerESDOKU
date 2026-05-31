@@ -10,6 +10,10 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="./js/md5.min.js"></script>
+  <script src="./js/sessionHandling.js"></script>
+  <script src="./js/token.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="stylesheet.css">
 </head>
@@ -62,19 +66,21 @@
                 <h2 class="fw-bold mb-2 text-uppercase">Anmelden</h2>
                 <p class="text-muted mb-4">Bitte geben Sie Ihre E-Mail und Ihr Passwort ein!</p>
 
-                <div data-mdb-input-init class="form-outline form-white mb-4">
-                  <input type="email" id="typeEmailX" class="form-control" />
-                  <label class="form-label" for="typeEmailX">E-Mail</label>
-                </div>
+                <div id="errorArea" style="padding: 10px; font-weight: bold; color: red; margin-bottom: 20px;"></div>
 
-                <div data-mdb-input-init class="form-outline form-white mb-4">
-                  <input type="password" id="typePasswordX" class="form-control" />
-                  <label class="form-label" for="typePasswordX">Passwort</label>
-                </div>
+                <form id="loginForm">
+                  <div data-mdb-input-init class="form-outline form-white mb-4">
+                    <input type="email" id="userEmail" class="form-control" />
+                    <label class="form-label" for="userEmail">E-Mail</label>
+                  </div>
 
+                  <div data-mdb-input-init class="form-outline form-white mb-4">
+                    <input type="password" id="userPassword" class="form-control" />
+                    <label class="form-label" for="userPassword">Passwort</label>
+                  </div>
 
-                <button type="button" class="btn btn-success w-100"
-                  onclick="location.href='uebersicht.html'">Anmelden</button>
+                  <button type="submit" class="btn btn-success w-100">Anmelden</button>
+                </form>
 
 
 
@@ -101,6 +107,64 @@
       <a href="datenschutz.html">Datenschutzerklärung</a>
     </div>
   </footer>
+
+  <script>
+    $(document).ready(function () {
+      $('#userEmail').keydown(clearErrorArea);
+      $('#userPassword').keydown(clearErrorArea);
+
+      $('#loginForm').submit(function (form) {
+        form.preventDefault();
+
+        // Get data from form and cleanup with trim
+        var email = $('#userEmail').val().trim();
+        var password = $('#userPassword').val().trim();
+
+        // Check if data missing
+        if (email.length == 0) {
+          $('#errorArea').html('Login fehlerhaft, bitte geben Sie die E-Mail ein');
+          return;
+        }
+        if (password.length == 0) {
+          $('#errorArea').html('Login fehlerhaft, bitte geben Sie das Passwort ein');
+          return;
+        }
+
+        // Hash password with md5
+        var pwHash = md5(password);
+
+        console.log('formular ausgelöst', email, password, pwHash);
+
+        // Create payload to send via ajax request
+        var payload = { 'credentials-email': email, 'credentials-password': pwHash };
+
+        $.ajax({
+          url: 'http://localhost:8000/api/token/authenticate',
+          method: 'get',
+          contentType: 'application/json; charset=utf-8',
+          cache: false,
+          dataType: 'json',
+          headers: payload
+        }).done(function (response) {
+          console.log('received Response', response);
+
+          // login ok, setting session var with token
+          saveToken(response);
+
+          // jump to overview page
+          location.href = 'uebersicht.html';
+
+        }).fail(function (jqXHR, statusText, error) {
+          console.log('Response Code: ' + jqXHR.status + ' - Error: ' + jqXHR.responseText);
+          $('#errorArea').html('Login fehlerhaft, bitte versuchen Sie es erneut!');
+        });
+      });
+    });
+
+    function clearErrorArea() {
+      $('#errorArea').empty();
+    }
+  </script>
 
 </body>
 

@@ -10,6 +10,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="./js/md5.min.js"></script>
+    <script src="./js/sessionHandling.js"></script>
+    <script src="./js/token.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="stylesheet.css">
 </head>
@@ -60,39 +64,38 @@
                             <h2 class="fw-bold mb-2 text-uppercase">Registrieren</h2>
                             <p class="text-muted mb-4">Bitte geben Sie Ihre Daten ein, um sich zu registrieren!</p>
 
-                            <form>
+                            <div id="errorArea"
+                                style="padding: 10px; font-weight: bold; color: red; margin-bottom: 20px;"></div>
 
+                            <form id="registrationForm">
                                 <div data-mdb-input-init class="form-outline mb-4">
-                                    <input type="text" id="form3Example1cg" class="form-control" />
-                                    <label class="form-label" for="form3Example1cg">Name</label>
+                                    <input type="text" id="userName" name="userName" class="form-control" />
+                                    <label class="form-label" for="userName">Name</label>
                                 </div>
 
                                 <div data-mdb-input-init class="form-outline mb-4">
-                                    <input type="email" id="form3Example3cg" class="form-control" />
-                                    <label class="form-label" for="form3Example3cg">E-Mail</label>
+                                    <input type="email" id="userEmail" name="userEmail" class="form-control" />
+                                    <label class="form-label" for="userEmail">E-Mail</label>
                                 </div>
 
                                 <div data-mdb-input-init class="form-outline mb-4">
-                                    <input type="password" id="form3Example4cg" class="form-control" />
-                                    <label class="form-label" for="form3Example4cg">Passwort</label>
+                                    <input type="password" id="userPassword" name="userPassword" class="form-control" />
+                                    <label class="form-label" for="userPassword">Passwort</label>
                                 </div>
 
                                 <div data-mdb-input-init class="form-outline mb-4">
-                                    <input type="password" id="form3Example4cdg" class="form-control" />
-                                    <label class="form-label" for="form3Example4cdg">Passwort wiederholen</label>
+                                    <input type="password" id="userPasswordRepeat" name="userPasswordRepeat"
+                                        class="form-control" />
+                                    <label class="form-label" for="userPasswordRepeat">Passwort wiederholen</label>
                                 </div>
 
-
-                                <button type="button" class="btn btn-success w-100"
-                                    onclick="location.href='erfolgreichRegistriert.html'">Registrieren</button>
+                                <button type="submit" class="btn btn-success w-100">Registrieren</button>
 
                                 <p class="mt-4 mb-0">
                                     Bereits einen Account?
                                     <a href="anmelden.html" class="fw-bold">Anmelden</a>
                                 </p>
-
                             </form>
-
                         </div>
                     </div>
                 </div>
@@ -108,6 +111,132 @@
             <a href="datenschutz.html">Datenschutzerklärung</a>
         </div>
     </footer>
+
+    <script>
+        $(document).ready(function () {
+            $('#userName').keydown(clearErrorArea);
+            $('#userEmail').keydown(clearErrorArea);
+            $('#userPassword').keydown(clearErrorArea);
+            $('#userPasswordRepeat').keydown(clearErrorArea);
+
+            $('#registrationForm').submit(function (form) {
+                form.preventDefault();
+
+                // Get data from form and cleanup with trim
+                var name = $('#userName').val().trim();
+                var email = $('#userEmail').val().trim();
+                var password = $('#userPassword').val().trim();
+                var passwordRepeat = $('#userPasswordRepeat').val().trim();
+
+                // Check if data missing
+                if (name.length == 0) {
+                    $('#errorArea').html('Registrierung fehlerhaft, bitte geben Sie Ihren Namen ein');
+                    return;
+                }
+                if (email.length == 0) {
+                    $('#errorArea').html('Registrierung fehlerhaft, bitte geben Sie Ihre E-Mail ein');
+                    return;
+                }
+                if (password.length == 0) {
+                    $('#errorArea').html('Registrierung fehlerhaft, bitte geben Sie ein Passwort ein');
+                    return;
+                }
+                if (passwordRepeat.length == 0) {
+                    $('#errorArea').html('Registrierung fehlerhaft, bitte wiederholen Sie Ihr Passwort');
+                    return;
+                }
+                if (password !== passwordRepeat) {
+                    $('#errorArea').html('Passwörter stimmen nicht überein');
+                    return;
+                }
+
+
+                // Check if email is unique
+                $.ajax({
+                    url: 'http://localhost:8000/api/benutzer/eindeutig/' + encodeURIComponent(email),
+                    method: 'get',
+                    contentType: 'application/json; charset=utf-8',
+                    cache: false,
+                    dataType: 'json'
+                }).done(function (response) {
+                    console.log('Unique check response:', response);
+
+                    if (!response.eindeutig) {
+                        $('#errorArea').html('Diese E-Mail ist bereits registriert');
+                        return;
+                    }
+
+                    // Email is unique, proceed with registration
+                    registerUser(name, email, password);
+
+                }).fail(function (jqXHR, statusText, error) {
+                    console.log('Response Code: ' + jqXHR.status);
+                    $('#errorArea').html('Fehler beim Überprüfen der E-Mail');
+                });
+            });
+        });
+
+        function registerUser(name, email, password) {
+            // Hash password with md5
+            var pwHash = md5(password);
+
+            console.log('formular ausgelöst', name, email, password, pwHash);
+
+            $.ajax({
+                url: 'http://localhost:8000/api/benutzer',
+                method: 'post',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+                dataType: 'json',
+                data: JSON.stringify({
+                    name: name,
+                    email: email,
+                    passwort: pwHash
+                })
+            }).done(function (response) {
+                console.log('Registration successful:', response);
+
+                // Registration successful, now auto-login
+                autoLogin(email, password);
+
+            }).fail(function (jqXHR, statusText, error) {
+                console.log('Response Code: ' + jqXHR.status);
+                $('#errorArea').html('Registrierung fehlgeschlagen, bitte versuchen Sie es erneut!');
+            });
+        }
+
+        function autoLogin(email, password) {
+            // Hash password with md5
+            var pwHash = md5(password);
+            var payload = { 'credentials-email': email, 'credentials-password': pwHash };
+
+            $.ajax({
+                url: 'http://localhost:8000/api/token/authenticate',
+                method: 'get',
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+                dataType: 'json',
+                headers: payload
+            }).done(function (response) {
+                console.log('Auto-login successful:', response);
+
+                // Store token in session
+                saveToken(response);
+
+                // Redirect to success page
+                location.href = 'erfolgreichRegistriert.html';
+
+            }).fail(function (jqXHR, statusText, error) {
+                console.log('Auto-login failed');
+                $('#errorArea').html('Auto-Login fehlgeschlagen. Bitte manuell anmelden.');
+            });
+        }
+
+        function clearErrorArea() {
+            $('#errorArea').empty();
+        }
+    </script>
+
 </body>
 
 </html>
