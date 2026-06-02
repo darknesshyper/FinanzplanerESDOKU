@@ -9,7 +9,7 @@ function saveToken(obj) {
 
 function jumpToLogin() {
     console.log('Jumping to login page');
-    document.location.href = 'loginFormularToken.html';
+    document.location.href = 'anmelden.html';
 }
 
 function validateTokenExistence() {
@@ -18,7 +18,7 @@ function validateTokenExistence() {
     // if nothing in session we can break away
     if (!existsSessionItem('credentials')) {
         console.log('No token in session storage, break away');
-        alert('Sie sind nicht angemeldet');
+        //alert('Sie sind nicht angemeldet');
         jumpToLogin();
     } else {
         console.log('Token exists in Session');
@@ -45,12 +45,12 @@ function validateTokenFromSession() {
         userObj = response;
 
         // call now the main function/logic which processes the intended job
-        doTheMainJob();
+        //doTheMainJob();
     }).fail(function (jqXHR, statusText, error) {
         console.log('Token is invalid -> jump to login page');
         console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
 
-        alert('Sie sind nicht angemeldet bzw. haben keinen Zugang');
-        document.location.href = 'loginFormularToken.html';
+        //alert('Sie sind nicht angemeldet bzw. haben keinen Zugang');
+        jumpToLogin();
     });
 }

@@ -45,7 +45,7 @@
                         title="Kontostand festlegen">
                         <i class="bi bi-gear-fill"></i>
                     </a>
-                    <a href="index.html" class="btn btn-outline-success">Abmelden</a>
+                    <a id="nav-button" class="btn btn-outline-success">Abmelden</a>
                 </div>
             </div>
         </div>
@@ -71,6 +71,14 @@
             <a href="datenschutzNachAnmelden.html">Datenschutzerklärung</a>
         </div>
     </footer>
+
+    <script>
+        $('#nav-button').click(function () {
+            console.log('Benutzer wird abgemeldet...');
+            clearSession();
+            location.href = 'index.html';
+        });
+    </script>
 </body>
 
 </html>
