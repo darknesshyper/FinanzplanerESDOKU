@@ -1,6 +1,7 @@
 const helper = require('../helper.js');
 const EinnahmeDao = require('../dao/einnahmeDao.js');
 const express = require('express');
+const { validateTokenAndGetUserId } = require('./token.js');
 var serviceRouter = express.Router();
 
 console.log('- Service Einnahme');
@@ -22,10 +23,13 @@ serviceRouter.get('/einnahme/gib/:id', function(request, response) {
 serviceRouter.get('/einnahme/alle', function(request, response) {
     console.log('Service Einnahme: Client requested all records');
 
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
+
     const einnahmeDao = new EinnahmeDao(request.app.locals.dbConnection);
     try {
-        var arr = einnahmeDao.loadAll();
-        console.log('Service Einnahme: Records loaded, count=' + arr.length);
+        var arr = einnahmeDao.loadAllByBenutzer(benutzerId);
+        console.log('Service Einnahme: Records loaded for user ' + benutzerId + ', count=' + arr.length);
         response.status(200).json(arr);
     } catch (ex) {
         console.error('Service Einnahme: Error loading all records. Exception occured: ' + ex.message);
@@ -49,6 +53,9 @@ serviceRouter.get('/einnahme/existiert/:id', function(request, response) {
 
 serviceRouter.post('/einnahme', function(request, response) {
     console.log('Service Einnahme: Client requested creation of new record');
+
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
 
     var errorMsgs=[];
     if (helper.isEmpty(request.body.bezeichnung)) 
@@ -89,8 +96,8 @@ serviceRouter.post('/einnahme', function(request, response) {
 
     const einnahmeDao = new EinnahmeDao(request.app.locals.dbConnection);
     try {
-        var obj = einnahmeDao.create(request.body.bezeichnung, request.body.geldbetrag, request.body.kategorie, request.body.datum);
-        console.log('Service Einnahme: Record inserted');
+        var obj = einnahmeDao.create(benutzerId, request.body.bezeichnung, request.body.geldbetrag, request.body.kategorie, request.body.datum);
+        console.log('Service Einnahme: Record inserted for user ' + benutzerId);
         response.status(200).json(obj);
     } catch (ex) {
         console.error('Service Einnahme: Error creating new record. Exception occured: ' + ex.message);
@@ -100,6 +107,9 @@ serviceRouter.post('/einnahme', function(request, response) {
 
 serviceRouter.put('/einnahme', function(request, response) {
     console.log('Service Einnahme: Client requested update of existing record');
+
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
 
     var errorMsgs=[];
     if (helper.isUndefined(request.body.id)) 
@@ -144,9 +154,15 @@ serviceRouter.put('/einnahme', function(request, response) {
 
     const einnahmeDao = new EinnahmeDao(request.app.locals.dbConnection);
     try {
-        var obj = einnahmeDao.update(request.body.id, request.body.bezeichnung, request.body.geldbetrag, request.body.kategorie, request.body.datum);
+        var obj = einnahmeDao.loadById(request.body.id);
+        if (obj.benutzerId != benutzerId) {
+            console.log('Service Einnahme: Datensatz gehoert nicht dem Benutzer');
+            response.status(403).json({ 'fehler': true, 'nachricht': 'Zugriff verweigert' });
+            return;
+        }
+        var updatedObj = einnahmeDao.update(request.body.id, request.body.bezeichnung, request.body.geldbetrag, request.body.kategorie, request.body.datum);
         console.log('Service Einnahme: Record updated, id=' + request.body.id);
-        response.status(200).json(obj);
+        response.status(200).json(updatedObj);
     } catch (ex) {
         console.error('Service Einnahme: Error updating record by id. Exception occured: ' + ex.message);
         response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
@@ -156,9 +172,17 @@ serviceRouter.put('/einnahme', function(request, response) {
 serviceRouter.delete('/einnahme/:id', function(request, response) {
     console.log('Service Einnahme: Client requested deletion of record, id=' + request.params.id);
 
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
+
     const einnahmeDao = new EinnahmeDao(request.app.locals.dbConnection);
     try {
         var obj = einnahmeDao.loadById(request.params.id);
+        if (obj.benutzerId != benutzerId) {
+            console.log('Service Einnahme: Datensatz gehoert nicht dem Benutzer');
+            response.status(403).json({ 'fehler': true, 'nachricht': 'Zugriff verweigert' });
+            return;
+        }
         einnahmeDao.delete(request.params.id);
         console.log('Service Einnahme: Deletion of record successfull, id=' + request.params.id);
         response.status(200).json({ 'gelöscht': true, 'eintrag': obj });

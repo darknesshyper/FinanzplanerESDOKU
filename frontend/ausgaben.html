@@ -11,6 +11,7 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="./js/sessionHandling.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="stylesheet.css">
 </head>
@@ -327,11 +328,14 @@
             console.log('DEBUG: kategorie=' + kategorie);
             console.log('DEBUG: datum=' + datum);
 
+            var credentials = getJSONSessionItem('credentials');
+
             $.ajax({
                 url: 'http://localhost:8000/api/ausgabe',
                 method: 'POST',
                 contentType: 'application/json; charset=utf-8',
                 cache: false,
+                headers: { 'Authorization': 'Bearer ' + credentials.token },
                 data: JSON.stringify({
                     bezeichnung: bezeichnung,
                     geldbetrag: geldbetrag,
@@ -393,11 +397,19 @@
         function loadTable() {
             console.log('Tabelle aus backend laden');
 
+            var credentials = getJSONSessionItem('credentials');
+            if (!credentials || !credentials.token) {
+                console.log('Kein Token vorhanden, bitte anmelden');
+                location.href = 'anmelden.html';
+                return;
+            }
+
             $.ajax({
                 url: 'http://localhost:8000/api/ausgabe/alle',
                 method: 'GET',
                 contentType: 'application/json; charset=utf-8',
                 cache: false,
+                headers: { 'Authorization': 'Bearer ' + credentials.token }
             }).done(function (response) {
                 allAusgaben = response;
                 filterAndDisplayTable();
@@ -413,7 +425,9 @@
                 }
             }).fail(function (jqXHR, statusText, error) {
                 console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
-                $('#output').html('Ein Fehler beim Laden der Daten aus der DB ist aufgetreten');
+                if (jqXHR.status === 401) {
+                    location.href = 'anmelden.html';
+                }
             });
         };
 
@@ -497,12 +511,15 @@
         };
 
         $(document).on('click', '.btn-delete', function () {
-            /*console.log('delete' + $(this).data('id'));*/
+            console.log('delete' + $(this).data('id'));
+            var credentials = getJSONSessionItem('credentials');
+
             $.ajax({
                 url: 'http://localhost:8000/api/ausgabe/' + $(this).data('id'),
                 method: 'DELETE',
                 contentType: 'application/json; charset=utf-8',
                 cache: false,
+                headers: { 'Authorization': 'Bearer ' + credentials.token }
             }).done(function (response) {
                 loadTable();
                 $('#output').html(response);
@@ -590,11 +607,14 @@
         }
 
         $(document).on('click', '.btn-edit', function () {
+            var credentials = getJSONSessionItem('credentials');
+
             $.ajax({
                 url: 'http://localhost:8000/api/ausgabe/gib/' + $(this).data('id'),
                 method: 'GET',
                 contentType: 'application/json; charset=utf-8',
                 cache: false,
+                headers: { 'Authorization': 'Bearer ' + credentials.token }
             }).done(function (response) {
                 ausgabe = response;
 
@@ -614,11 +634,14 @@
             });
 
             $(document).on('click', '#ausgabe-speichern', function () {
+                var credentials = getJSONSessionItem('credentials');
+
                 $.ajax({
                     url: 'http://localhost:8000/api/ausgabe',
                     method: 'PUT',
                     contentType: 'application/json; charset=utf-8',
                     cache: false,
+                    headers: { 'Authorization': 'Bearer ' + credentials.token },
                     data: JSON.stringify({
                         id: ausgabe.id,
                         bezeichnung: $('#bezeichnung-ausgabe').val(),

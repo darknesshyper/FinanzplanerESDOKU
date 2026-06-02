@@ -1,6 +1,7 @@
 const helper = require('../helper.js');
 const KontostandDao = require('../dao/kontostandDao.js');
 const express = require('express');
+const { validateTokenAndGetUserId } = require('./token.js');
 var serviceRouter = express.Router();
 
 console.log('- Service Kontostand');
@@ -23,10 +24,13 @@ serviceRouter.get('/kontostand/gib/:id', function(request, response) {
 serviceRouter.get('/kontostand/alle', function(request, response) {
     console.log('Service Kontostand: Client requested all records');
 
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
+
     const kontostandDao = new KontostandDao(request.app.locals.dbConnection);
     try {
-        var arr = kontostandDao.loadAll();
-        console.log('Service Kontostand: Records loaded, count=' + arr.length);
+        var arr = kontostandDao.loadAllByBenutzer(benutzerId);
+        console.log('Service Kontostand: Records loaded for user ' + benutzerId + ', count=' + arr.length);
         response.status(200).json(arr);
     } catch (ex) {
         console.error('Service Kontostand: Error loading all records. Exception occured: ' + ex.message);
@@ -51,6 +55,9 @@ serviceRouter.get('/kontostand/existiert/:id', function(request, response) {
 serviceRouter.post('/kontostand', function(request, response) {
     console.log('Service Kontostand: Client requested creation of new record');
 
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
+
     var errorMsgs=[];
     if (helper.isEmpty(request.body.startwert)) 
         errorMsgs.push('startwert fehlt');
@@ -63,8 +70,8 @@ serviceRouter.post('/kontostand', function(request, response) {
 
     const kontostandDao = new KontostandDao(request.app.locals.dbConnection);
     try {
-        var obj = kontostandDao.create(request.body.startwert);
-        console.log('Service Kontostand: Record inserted');
+        var obj = kontostandDao.create(benutzerId, request.body.startwert);
+        console.log('Service Kontostand: Record inserted for user ' + benutzerId);
         response.status(200).json(obj);
     } catch (ex) {
         console.error('Service Kontostand: Error creating new record. Exception occured: ' + ex.message);
@@ -74,6 +81,9 @@ serviceRouter.post('/kontostand', function(request, response) {
 
 serviceRouter.put('/kontostand/:id', function(request, response) {
     console.log('Service Kontostand: Client requested update of existing record');
+
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
 
     var errorMsgs=[];
     if (helper.isUndefined(request.body.id)) 
@@ -89,9 +99,15 @@ serviceRouter.put('/kontostand/:id', function(request, response) {
 
     const kontostandDao = new KontostandDao(request.app.locals.dbConnection);
     try {
-        var obj = kontostandDao.update(request.body.id, request.body.startwert);
+        var obj = kontostandDao.loadById(request.body.id);
+        if (obj.benutzerId != benutzerId) {
+            console.log('Service Kontostand: Datensatz gehoert nicht dem Benutzer');
+            response.status(403).json({ 'fehler': true, 'nachricht': 'Zugriff verweigert' });
+            return;
+        }
+        var updatedObj = kontostandDao.update(request.body.id, request.body.startwert);
         console.log('Service Kontostand: Record updated, id=' + request.body.id);
-        response.status(200).json(obj);
+        response.status(200).json(updatedObj);
     } catch (ex) {
         console.error('Service Kontostand: Error updating record by id. Exception occured: ' + ex.message);
         response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
@@ -101,9 +117,17 @@ serviceRouter.put('/kontostand/:id', function(request, response) {
 serviceRouter.delete('/kontostand/:id', function(request, response) {
     console.log('Service Kontostand: Client requested deletion of record, id=' + request.params.id);
 
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
+
     const kontostandDao = new KontostandDao(request.app.locals.dbConnection);
     try {
         var obj = kontostandDao.loadById(request.params.id);
+        if (obj.benutzerId != benutzerId) {
+            console.log('Service Kontostand: Datensatz gehoert nicht dem Benutzer');
+            response.status(403).json({ 'fehler': true, 'nachricht': 'Zugriff verweigert' });
+            return;
+        }
         kontostandDao.delete(request.params.id);
         console.log('Service Kontostand: Deletion of record successfull, id=' + request.params.id);
         response.status(200).json({ 'gelöscht': true, 'eintrag': obj });

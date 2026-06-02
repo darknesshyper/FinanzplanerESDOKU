@@ -12,6 +12,59 @@ const token_maxAge = '1h';
 
 console.log('- Service Token');
 
+function validateTokenAndGetUserId(request, response) {
+    console.log('Service Token: Server requests validation of token and retrieval of userId');
+    // get authorization data from header
+    var authorization = request.headers['authorization'];
+    if (helper.isUndefined(authorization)) {
+        console.log('Service Token: Validation not possible, Authorization missing');
+        response.status(400).json({ 'fehler': true, 'nachricht': 'Validation failed, authorization missing' });
+        return;
+    }
+
+    // now check if Bearer Keyword at beginning
+    if (!helper.strStartsWith(authorization, 'Bearer ')) {
+        console.log('Service Token: Validation not possible, Format mismatch');
+        response.status(400).json({ 'fehler': true, 'nachricht': 'Validation failed, Format mismatch' });
+        return;
+    }
+
+    // ok remove the starting text and validate the token itself
+    var token = authorization.substring(7);
+    console.log('Service Token: Validating token', token);
+
+    // if anything is not correct with token, exception is created
+    // if ok, we have the decoded payload, the user object which we can further check or just send back to caller
+    try {
+
+        var decoded = jwt.verify(token, token_secret, { algorithm: token_algorithm, maxAge: token_maxAge });
+
+        console.log('Service Token: Token correctly decoded, so its valid, iat/exp', decoded.iat, decoded.exp);
+
+        // now we can check if correct structure is in decoded data
+        // has to start with attribute data and has to contain data.id and data.email
+
+        if (helper.isUndefined(decoded.data) || helper.isUndefined(decoded.data.id) || helper.isUndefined(decoded.data.email)) {
+            console.log('Service Token: Validation failed, Format of payload is incorrect');
+            response.status(400).json({ 'fehler': true, 'nachricht': 'Validation failed, Format of Payload is incorrect' });
+            return;
+        }
+
+        // here we could do all other kind of checks, like verifying against the database but thats enough. Lets just modify the data a bit and send it back as successfull response
+        delete decoded.data.passwort;
+        console.log('Service Token: Token fully validated id, email', decoded.data.id, decoded.data.email);
+
+        return decoded.data.id;
+
+        response.status(200).json(decoded.data);
+    } catch (ex) {
+        console.error('Service Token: Error Validating Token. Exception occured: ' + ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
+    }
+
+    response.status(200);
+}
+
 serviceRouter.get('/token/authenticate', function(request, response) {
     console.log('Service Token: Client requests authentication of credentials');
 
@@ -103,3 +156,4 @@ serviceRouter.get('/token/validate', function(request, response) {
 });
 
 module.exports = serviceRouter;
+module.exports.validateTokenAndGetUserId = validateTokenAndGetUserId;

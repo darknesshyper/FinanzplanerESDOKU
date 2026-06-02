@@ -11,6 +11,7 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="./js/sessionHandling.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="stylesheet.css">
 </head>
@@ -267,11 +268,19 @@
         function loadTables() {
             console.log('Tabelle aus backend laden');
 
+            var credentials = getJSONSessionItem('credentials');
+            if (!credentials || !credentials.token) {
+                console.log('Kein Token vorhanden, bitte anmelden');
+                location.href = 'anmelden.html';
+                return;
+            }
+
             $.ajax({
                 url: 'http://localhost:8000/api/kontostand/alle',
                 method: 'GET',
                 contentType: 'application/json; charset=utf-8',
                 cache: false,
+                headers: { 'Authorization': 'Bearer ' + credentials.token }
             }).done(function (response) {
                 if (response && response.length > 0) {
                     startKontostand = parseFloat(response[0].startwert) || 0;
@@ -281,18 +290,23 @@
                 loadEinnahmen();
             }).fail(function (jqXHR, statusText, error) {
                 console.log('Fehler beim Laden des Kontostands: ' + jqXHR.responseText);
-
+                if (jqXHR.status === 401) {
+                    location.href = 'anmelden.html';
+                }
                 loadAusgaben();
                 loadEinnahmen();
             });
         }
 
         function loadAusgaben() {
+            var credentials = getJSONSessionItem('credentials');
+
             $.ajax({
                 url: 'http://localhost:8000/api/ausgabe/alle',
                 method: 'GET',
                 contentType: 'application/json; charset=utf-8',
                 cache: false,
+                headers: { 'Authorization': 'Bearer ' + credentials.token }
             }).done(function (response) {
                 allAusgaben = response;
                 filterAndDisplayTable('ausgaben');
@@ -304,11 +318,14 @@
         }
 
         function loadEinnahmen() {
+            var credentials = getJSONSessionItem('credentials');
+
             $.ajax({
                 url: 'http://localhost:8000/api/einnahme/alle',
                 method: 'GET',
                 contentType: 'application/json; charset=utf-8',
                 cache: false,
+                headers: { 'Authorization': 'Bearer ' + credentials.token }
             }).done(function (response) {
                 allEinnahmen = response;
                 filterAndDisplayTable('einnahmen');
@@ -392,12 +409,15 @@
 
         $(document).on('click', '.btn-delete', function () {
             console.log('delete: ' + $(this).data('id') + ' tabellenname: ' + $(this).data('tableid'));
+            var credentials = getJSONSessionItem('credentials');
+
             if ($(this).data('tableid') === 'ausgaben-table') {
                 $.ajax({
                     url: 'http://localhost:8000/api/ausgabe/' + $(this).data('id'),
                     method: 'DELETE',
                     contentType: 'application/json; charset=utf-8',
                     cache: false,
+                    headers: { 'Authorization': 'Bearer ' + credentials.token }
                 }).done(function (response) {
                     loadAusgaben();
                 }).fail(function (jqXHR, statusText, error) {
@@ -410,6 +430,7 @@
                     method: 'DELETE',
                     contentType: 'application/json; charset=utf-8',
                     cache: false,
+                    headers: { 'Authorization': 'Bearer ' + credentials.token }
                 }).done(function (response) {
                     loadEinnahmen();
                 }).fail(function (jqXHR, statusText, error) {
