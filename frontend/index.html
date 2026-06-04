@@ -113,6 +113,8 @@
                 $.ajax({
                     url: 'http://localhost:8000/api/benutzer/aktuell',
                     method: 'GET',
+                    contentType: 'application/json; charset=utf-8',
+                    cache: false,
                     headers: { 'Authorization': 'Bearer ' + credentials.token }
                 }).done(function (user) {
                     $('#welcome-heading').text(`Willkommen ${user.name}!`);
