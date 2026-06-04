@@ -21,6 +21,17 @@ class BenutzerDao {
         return result;
     }
 
+    loadNameById(id) {
+        var sql = 'SELECT name FROM Benutzer WHERE id=?';
+        var statement = this._conn.prepare(sql);
+        var result = statement.get(id);
+
+        if (helper.isUndefined(result))
+            throw new Error('No Record found by id=' + id);
+
+        return result;
+    }
+
     loadAll() {
         var sql = 'SELECT * FROM Benutzer';
         var statement = this._conn.prepare(sql);
