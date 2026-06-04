@@ -12,8 +12,13 @@
         crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="./js/sessionHandling.js"></script>
+    <script src="./js/token.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="stylesheet.css">
+
+    <script>
+        validateTokenFromSession();
+    </script>
 </head>
 
 <body>
@@ -143,15 +148,15 @@
         function updateNavbar() {
             const credentials = getJSONSessionItem('credentials');
             const isLoggedIn = credentials && credentials.token;
-            
+
             if (isLoggedIn) {
                 $('#nav-uebersicht').removeClass('disabled-link');
                 $('#nav-ausgaben').removeClass('disabled-link');
                 $('#nav-einnahmen').removeClass('disabled-link');
                 $('#nav-kontostand').removeClass('disabled-link');
-                
+
                 $('#nav-button').attr('href', '#').text('Abmelden');
-                
+
                 $('#welcome-heading').text('Willkommen Hans!');
                 $('#welcome-text').text('Willkommen zurück auf Ihrer zentralen Plattform für Ihre persönliche Finanzverwaltung. Hier behalten Sie jederzeit den Überblick über Einnahmen und Ausgaben - einfach und übersichtlich. Unsere intuitiven Funktionen helfen Ihnen dabei, Ihre Finanzen effizient zu organisieren und fundierte Entscheidungen zu treffen. Egal ob für den Alltag oder langfristige Ziele - mit unserer Webseite planen Sie Ihre Finanzen smarter und erfolgreicher. Nutzen Sie Ihre aktuellen Daten und verwandeln Sie Zahlen in klare Erkenntnisse für Ihre finanzielle Zukunft.');
             } else {
@@ -159,22 +164,22 @@
                 $('#nav-ausgaben').addClass('disabled-link');
                 $('#nav-einnahmen').addClass('disabled-link');
                 $('#nav-kontostand').addClass('disabled-link');
-                
+
                 $('#nav-button').attr('href', 'anmelden.html').text('Anmelden');
-                
+
                 $('#welcome-heading').text('Willkommen bei Finanzplaner');
                 $('#welcome-text').text('Willkommen auf Ihrer zentralen Plattform für Ihre persönliche Finanzverwaltung. Hier behalten Sie jederzeit den Überblick über Einnahmen und Ausgaben - einfach und übersichtlich. Unsere intuitiven Funktionen helfen Ihnen dabei, Ihre Finanzen effizient zu organisieren und fundierte Entscheidungen zu treffen. Egal ob für den Alltag oder langfristige Ziele - mit unserer Webseite planen Sie Ihre Finanzen smarter und erfolgreicher. Starten Sie noch heute und verwandeln Sie Zahlen in klare Erkenntnisse für Ihre finanzielle Zukunft.');
             }
         }
-        
-        $(document).ready(function() {
+
+        $(document).ready(function () {
             updateNavbar();
-            
+
             window.addEventListener('storage', updateNavbar);
-            
+
             $('#nav-button').click(function () {
                 const isLoggedIn = getJSONSessionItem('credentials') && getJSONSessionItem('credentials').token;
-                
+
                 if (isLoggedIn) {
                     console.log('Benutzer wird abgemeldet...');
                     clearSession();
