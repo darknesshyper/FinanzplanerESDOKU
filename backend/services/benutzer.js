@@ -1,6 +1,7 @@
 const helper = require('../helper.js');
 const BenutzerDao = require('../dao/benutzerDao.js');
 const express = require('express');
+const { validateTokenAndGetUserId } = require('./token.js');
 var serviceRouter = express.Router();
 
 console.log('- Service Benutzer');
@@ -15,6 +16,23 @@ serviceRouter.get('/benutzer/gib/:id', function (request, response) {
         response.status(200).json(obj);
     } catch (ex) {
         console.error('Service Benutzer: Error loading record by id. Exception occured: ' + ex.message);
+        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
+    }
+});
+
+serviceRouter.get('/benutzer/aktuell', function (request, response) {
+    console.log('Service Benutzer: Client requested actual record');
+
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
+
+    const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
+    try {
+        var arr = benutzerDao.loadNameById(benutzerId);
+        console.log('Service Benutzer: Records loaded for user ' + benutzerId + ', count=' + arr.length);
+        response.status(200).json(arr);
+    } catch (ex) {
+        console.error('Service Benutzer: Error loading all records. Exception occured: ' + ex.message);
         response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
     }
 });

@@ -43,9 +43,11 @@
                     </li>
                 </ul>
                 <div class="d-flex align-items-center gap-2">
-                    <a id="nav-kontostand" href="kontostand.html" class="btn btn-outline-secondary d-flex align-items-center disabled-link" title="Kontostand festlegen">
+                    <a id="nav-kontostand" href="kontostand.html"
+                        class="btn btn-outline-secondary d-flex align-items-center disabled-link"
+                        title="Kontostand festlegen">
                         <i class="bi bi-gear-fill"></i>
-                    </a> 
+                    </a>
                     <a id="nav-button" href="anmelden.html" class="btn btn-outline-success">Anmelden</a>
                 </div>
             </div>
@@ -55,11 +57,14 @@
     <div id="welcome-section">
         <h2 id="welcome-heading">Willkommen bei Finanzplaner</h2>
         <p id="welcome-text">
-            Willkommen auf Ihrer zentralen Plattform für Ihre persönliche Finanzverwaltung. Hier behalten Sie 
-            jederzeit den Überblick über Einnahmen und Ausgaben - einfach und übersichtlich. Unsere 
-            intuitiven Funktionen helfen Ihnen dabei, Ihre Finanzen effizient zu organisieren und fundierte Entscheidungen zu 
-            treffen. Egal ob für den Alltag oder langfristige Ziele - mit unserer Webseite planen Sie Ihre Finanzen smarter und 
-            erfolgreicher. Starten Sie noch heute und verwandeln Sie Zahlen in klare Erkenntnisse für Ihre finanzielle Zukunft.
+            Willkommen auf Ihrer zentralen Plattform für Ihre persönliche Finanzverwaltung. Hier behalten Sie
+            jederzeit den Überblick über Einnahmen und Ausgaben - einfach und übersichtlich. Unsere
+            intuitiven Funktionen helfen Ihnen dabei, Ihre Finanzen effizient zu organisieren und fundierte
+            Entscheidungen zu
+            treffen. Egal ob für den Alltag oder langfristige Ziele - mit unserer Webseite planen Sie Ihre Finanzen
+            smarter und
+            erfolgreicher. Starten Sie noch heute und verwandeln Sie Zahlen in klare Erkenntnisse für Ihre finanzielle
+            Zukunft.
         </p>
     </div>
 
@@ -67,26 +72,27 @@
         <div class="feature-card">
             <h3>Übersicht</h3>
             <p>
-                Behalten Sie alle wichtigen Finanzdaten im Blick. Die Übersichtsseite zeigt Einnahmen, Ausgaben, Kontostände klar 
+                Behalten Sie alle wichtigen Finanzdaten im Blick. Die Übersichtsseite zeigt Einnahmen, Ausgaben,
+                Kontostände klar
                 strukturiert mit anschaulicher Visualisierung.
             </p>
-            <img class="preview-image"  src="bilder/Uebersicht-preview.png" alt="Uebersicht-preview">
+            <img class="preview-image" src="bilder/Uebersicht-preview.png" alt="Uebersicht-preview">
         </div>
         <div class="feature-card">
             <h3>Ausgaben</h3>
             <p>
-                Verwalten Sie Ihre Ausgaben einfach und übersichtlich. Erfassen Sie neue Zahlungen und ordnen Sie diese 
+                Verwalten Sie Ihre Ausgaben einfach und übersichtlich. Erfassen Sie neue Zahlungen und ordnen Sie diese
                 passenden Kategorien zu, um Ihre Finanzen zu sortieren.
             </p>
-            <img class="preview-image"  src="bilder/Ausgaben-preview.png" alt="Ausgaben-preview">
+            <img class="preview-image" src="bilder/Ausgaben-preview.png" alt="Ausgaben-preview">
         </div>
         <div class="feature-card">
             <h3>Einnahmen</h3>
-            <p> 
-                Verwalten Sie Ihre Einnahmen einfach und übersichtlich. Fügen Sie neue Einnahmen hinzu und 
+            <p>
+                Verwalten Sie Ihre Einnahmen einfach und übersichtlich. Fügen Sie neue Einnahmen hinzu und
                 behalten Sie alle Geldeingänge jederzeit im Blick.
             </p>
-            <img class="preview-image"  src="bilder/Einnahmen-preview.png" alt="Einnahmen-preview">
+            <img class="preview-image" src="bilder/Einnahmen-preview.png" alt="Einnahmen-preview">
         </div>
     </div>
 
@@ -102,38 +108,47 @@
         function updateNavbar() {
             const credentials = getJSONSessionItem('credentials');
             const isLoggedIn = credentials && credentials.token;
-            
+
             if (isLoggedIn) {
-                $('#nav-uebersicht').removeClass('disabled-link');
-                $('#nav-ausgaben').removeClass('disabled-link');
-                $('#nav-einnahmen').removeClass('disabled-link');
-                $('#nav-kontostand').removeClass('disabled-link');
-                
-                $('#nav-button').attr('href', '#').text('Abmelden');
-                
-                $('#welcome-heading').text('Willkommen Hans!');
-                $('#welcome-text').text('Willkommen zurück auf Ihrer zentralen Plattform für Ihre persönliche Finanzverwaltung. Hier behalten Sie jederzeit den Überblick über Einnahmen und Ausgaben - einfach und übersichtlich. Unsere intuitiven Funktionen helfen Ihnen dabei, Ihre Finanzen effizient zu organisieren und fundierte Entscheidungen zu treffen. Egal ob für den Alltag oder langfristige Ziele - mit unserer Webseite planen Sie Ihre Finanzen smarter und erfolgreicher. Nutzen Sie Ihre aktuellen Daten und verwandeln Sie Zahlen in klare Erkenntnisse für Ihre finanzielle Zukunft.');
+                $.ajax({
+                    url: 'http://localhost:8000/api/benutzer/aktuell',
+                    method: 'GET',
+                    headers: { 'Authorization': 'Bearer ' + credentials.token }
+                }).done(function (user) {
+                    $('#welcome-heading').text(`Willkommen ${user.name}!`);
+                    $('#welcome-text').text('Willkommen zurück auf Ihrer zentralen Plattform für Ihre persönliche Finanzverwaltung. Hier behalten Sie jederzeit den Überblick über Einnahmen und Ausgaben - einfach und übersichtlich. Unsere intuitiven Funktionen helfen Ihnen dabei, Ihre Finanzen effizient zu organisieren und fundierte Entscheidungen zu treffen. Egal ob für den Alltag oder langfristige Ziele - mit unserer Webseite planen Sie Ihre Finanzen smarter und erfolgreicher. Nutzen Sie Ihre aktuellen Daten und verwandeln Sie Zahlen in klare Erkenntnisse für Ihre finanzielle Zukunft.');
+
+                    $('#nav-uebersicht').removeClass('disabled-link');
+                    $('#nav-ausgaben').removeClass('disabled-link');
+                    $('#nav-einnahmen').removeClass('disabled-link');
+                    $('#nav-kontostand').removeClass('disabled-link');
+
+                    $('#nav-button').attr('href', '#').text('Abmelden');
+                }).fail(function () {
+                    console.error('Fehler beim Abrufen der Benutzerdaten.');
+                });
+
             } else {
                 $('#nav-uebersicht').addClass('disabled-link');
                 $('#nav-ausgaben').addClass('disabled-link');
                 $('#nav-einnahmen').addClass('disabled-link');
                 $('#nav-kontostand').addClass('disabled-link');
-                
+
                 $('#nav-button').attr('href', 'anmelden.html').text('Anmelden');
-                
+
                 $('#welcome-heading').text('Willkommen bei Finanzplaner');
                 $('#welcome-text').text('Willkommen auf Ihrer zentralen Plattform für Ihre persönliche Finanzverwaltung. Hier behalten Sie jederzeit den Überblick über Einnahmen und Ausgaben - einfach und übersichtlich. Unsere intuitiven Funktionen helfen Ihnen dabei, Ihre Finanzen effizient zu organisieren und fundierte Entscheidungen zu treffen. Egal ob für den Alltag oder langfristige Ziele - mit unserer Webseite planen Sie Ihre Finanzen smarter und erfolgreicher. Starten Sie noch heute und verwandeln Sie Zahlen in klare Erkenntnisse für Ihre finanzielle Zukunft.');
             }
         }
-        
-        $(document).ready(function() {
+
+        $(document).ready(function () {
             updateNavbar();
-            
+
             window.addEventListener('storage', updateNavbar);
-            
+
             $('#nav-button').click(function () {
                 const isLoggedIn = getJSONSessionItem('credentials') && getJSONSessionItem('credentials').token;
-                
+
                 if (isLoggedIn) {
                     console.log('Benutzer wird abgemeldet...');
                     clearSession();
