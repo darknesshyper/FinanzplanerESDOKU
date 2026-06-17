@@ -105,6 +105,14 @@
     </footer>
 
     <script>
+        $(document).ajaxError(function (event, jqXHR) {
+            if (jqXHR.status === 401) {
+                clearSession();
+                alert('Ihre Sitzung ist ungültig. Bitte melden Sie sich erneut an.');
+                location.href = 'anmelden.html';
+            }
+        });
+
         function updateNavbar() {
             const credentials = getJSONSessionItem('credentials');
             const isLoggedIn = credentials && credentials.token;

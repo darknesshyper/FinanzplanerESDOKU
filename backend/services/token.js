@@ -18,14 +18,14 @@ function validateTokenAndGetUserId(request, response) {
     var authorization = request.headers['authorization'];
     if (helper.isUndefined(authorization)) {
         console.log('Service Token: Validation not possible, Authorization missing');
-        response.status(400).json({ 'fehler': true, 'nachricht': 'Validation failed, authorization missing' });
+        response.status(401).json({ 'fehler': true, 'nachricht': 'Validation failed, authorization missing', 'code': 'NO_TOKEN' });
         return;
     }
 
     // now check if Bearer Keyword at beginning
     if (!helper.strStartsWith(authorization, 'Bearer ')) {
         console.log('Service Token: Validation not possible, Format mismatch');
-        response.status(400).json({ 'fehler': true, 'nachricht': 'Validation failed, Format mismatch' });
+        response.status(401).json({ 'fehler': true, 'nachricht': 'Validation failed, Format mismatch', 'code': 'TOKEN_INVALID' });
         return;
     }
 
@@ -46,7 +46,7 @@ function validateTokenAndGetUserId(request, response) {
 
         if (helper.isUndefined(decoded.data) || helper.isUndefined(decoded.data.id) || helper.isUndefined(decoded.data.email)) {
             console.log('Service Token: Validation failed, Format of payload is incorrect');
-            response.status(400).json({ 'fehler': true, 'nachricht': 'Validation failed, Format of Payload is incorrect' });
+            response.status(401).json({ 'fehler': true, 'nachricht': 'Validation failed, Format of Payload is incorrect', 'code': 'TOKEN_INVALID' });
             return;
         }
 
@@ -55,14 +55,18 @@ function validateTokenAndGetUserId(request, response) {
         console.log('Service Token: Token fully validated id, email', decoded.data.id, decoded.data.email);
 
         return decoded.data.id;
-
-        response.status(200).json(decoded.data);
     } catch (ex) {
         console.error('Service Token: Error Validating Token. Exception occured: ' + ex.message);
-        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
-    }
 
-    response.status(200);
+        // TokenExpiredError gets its own code so the client could show a tailored message,
+        // but BOTH cases must be 401 - that's what the frontend's auto-logout listens for
+        if (ex.name === 'TokenExpiredError') {
+            response.status(401).json({ 'fehler': true, 'nachricht': 'Sitzung abgelaufen, bitte erneut anmelden', 'code': 'TOKEN_EXPIRED' });
+        } else {
+            response.status(401).json({ 'fehler': true, 'nachricht': ex.message, 'code': 'TOKEN_INVALID' });
+        }
+        return;
+    }
 }
 
 serviceRouter.get('/token/authenticate', function(request, response) {
@@ -110,14 +114,14 @@ serviceRouter.get('/token/validate', function(request, response) {
     var authorization = request.headers['authorization'];
     if (helper.isUndefined(authorization)) {
         console.log('Service Token: Validation not possible, Authorization missing');
-        response.status(400).json({ 'fehler': true, 'nachricht': 'Validation failed, authorization missing' });
+        response.status(401).json({ 'fehler': true, 'nachricht': 'Validation failed, authorization missing', 'code': 'NO_TOKEN' });
         return;
     }
 
     // now check if Bearer Keyword at beginning
     if (!helper.strStartsWith(authorization, 'Bearer ')) {
         console.log('Service Token: Validation not possible, Format mismatch');
-        response.status(400).json({ 'fehler': true, 'nachricht': 'Validation failed, Format mismatch' });
+        response.status(401).json({ 'fehler': true, 'nachricht': 'Validation failed, Format mismatch', 'code': 'TOKEN_INVALID' });
         return;
     }
 
@@ -138,7 +142,7 @@ serviceRouter.get('/token/validate', function(request, response) {
 
         if (helper.isUndefined(decoded.data) || helper.isUndefined(decoded.data.id) || helper.isUndefined(decoded.data.email)) {
             console.log('Service Token: Validation failed, Format of payload is incorrect');
-            response.status(400).json({ 'fehler': true, 'nachricht': 'Validation failed, Format of Payload is incorrect' });
+            response.status(401).json({ 'fehler': true, 'nachricht': 'Validation failed, Format of Payload is incorrect', 'code': 'TOKEN_INVALID' });
             return;
         }
 
@@ -149,10 +153,13 @@ serviceRouter.get('/token/validate', function(request, response) {
         response.status(200).json(decoded.data);
     } catch (ex) {
         console.error('Service Token: Error Validating Token. Exception occured: ' + ex.message);
-        response.status(400).json({ 'fehler': true, 'nachricht': ex.message });
-    }
 
-    response.status(200);
+        if (ex.name === 'TokenExpiredError') {
+            response.status(401).json({ 'fehler': true, 'nachricht': 'Sitzung abgelaufen, bitte erneut anmelden', 'code': 'TOKEN_EXPIRED' });
+        } else {
+            response.status(401).json({ 'fehler': true, 'nachricht': ex.message, 'code': 'TOKEN_INVALID' });
+        }
+    }
 });
 
 module.exports = serviceRouter;

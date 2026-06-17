@@ -201,6 +201,14 @@
 
 
     <script>
+        $(document).ajaxError(function (event, jqXHR) {
+            if (jqXHR.status === 401) {
+                clearSession();
+                alert('Ihre Sitzung ist ungültig. Bitte melden Sie sich erneut an.');
+                location.href = 'anmelden.html';
+            }
+        });
+
         function clearEinnahmenErrors() {
             $('#bezeichnung-einnahme').removeClass('error');
             $('#betrag-einnahme').removeClass('error');
