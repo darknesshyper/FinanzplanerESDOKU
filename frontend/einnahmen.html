@@ -147,11 +147,6 @@
                 </select>
                 <select id="uebersicht-year" class="dropdown form-control">
                     <option value="all">Alle Jahre</option>
-                    <option value="2026">2026</option>
-                    <option value="2025">2025</option>
-                    <option value="2024">2024</option>
-                    <option value="2023">2023</option>
-                    <option value="2022">2022</option>
                 </select>
             </div>
             <div class="chart-container">
@@ -331,6 +326,7 @@
                 headers: { 'Authorization': 'Bearer ' + credentials.token }
             }).done(function (response) {
                 allEinnahmen = response;
+                adjustYearDropdown(allEinnahmen);
                 filterAndDisplayTable();
 
 
@@ -350,6 +346,26 @@
                 }
             });
         };
+
+        function adjustYearDropdown(data) {
+            const years = new Set();
+            data.forEach(item => {
+                if (item.datum) {
+                    const year = item.datum.split('-')[0];
+                    years.add(year);
+                }
+            });
+
+            const sortedYears = Array.from(years).sort((a, b) => b - a);
+
+            const yearSelect = $('#uebersicht-year');
+            yearSelect.find('option:not([value="all"])').remove();
+
+            sortedYears.forEach(year => {
+                yearSelect.append(`<option value="${year}">${year}</option>`);
+            });
+        }
+
 
         function filterAndDisplayTable() {
             const selectedCategory = $('#kategorie-einnahme-uebersicht').val();
@@ -387,15 +403,7 @@
             console.log('Jahresfilter: ' + selectedYear);
 
             if (selectedYear !== 'all') {
-                const yearMap = {
-                    '2026': '2026',
-                    '2025': '2025',
-                    '2024': '2024',
-                    '2023': '2023',
-                    '2022': '2022'
-                };
-                const yearNum = yearMap[selectedYear];
-                filteredData = filteredData.filter(item => item.datum.split('-')[0] === yearNum);
+                filteredData = filteredData.filter(item => item.datum.split('-')[0] === selectedYear);
             }
 
             filteredData = filteredData.slice().sort((a, b) => new Date(b.datum) - new Date(a.datum))
