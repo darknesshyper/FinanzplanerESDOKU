@@ -234,9 +234,17 @@
             filterAndDisplayTable('einnahmen');
         });
 
-        $('#uebersicht-month').change(() => updateBarchart());
+        $('#uebersicht-month').change(() => {
+            filterAndDisplayTable('ausgaben');
+            filterAndDisplayTable('einnahmen');
+            updateBarchart();
+        });
 
-        $('#uebersicht-year').change(() => updateBarchart());
+        $('#uebersicht-year').change(() => {
+            filterAndDisplayTable('ausgaben');
+            filterAndDisplayTable('einnahmen');
+            updateBarchart();
+        });
 
         function adjustYearDropdown() {
             const years = new Set();
@@ -375,14 +383,30 @@
         }
 
         function filterAndDisplayTable(type) {
+            const monthMap = {
+                'jan': '01', 'feb': '02', 'mar': '03', 'apr': '04', 'mai': '05', 'jun': '06',
+                'jul': '07', 'aug': '08', 'sep': '09', 'okt': '10', 'nov': '11', 'dez': '12'
+            };
+            const selectedMonth = $('#uebersicht-month').val();
+            const selectedYear = $('#uebersicht-year').val();
+
             if (type === 'ausgaben') {
                 const selectedCategory = $('#kategorie-ausgabe-uebersicht').val();
-                console.log('Ausgaben-Filter angewendet: ' + selectedCategory);
+                console.log('Ausgaben-Filter angewendet: ' + selectedCategory + ', Monat: ' + selectedMonth + ', Jahr: ' + selectedYear);
 
                 let filteredData = allAusgaben;
 
                 if (selectedCategory !== 'all') {
-                    filteredData = allAusgaben.filter(item => item.kategorie === selectedCategory);
+                    filteredData = filteredData.filter(item => item.kategorie === selectedCategory);
+                }
+
+                if (selectedMonth !== 'all') {
+                    const monthNum = monthMap[selectedMonth];
+                    filteredData = filteredData.filter(item => item.datum.split('-')[1] === monthNum);
+                }
+
+                if (selectedYear !== 'all') {
+                    filteredData = filteredData.filter(item => item.datum.split('-')[0] === selectedYear);
                 }
 
                 filteredData = filteredData.slice().sort((a, b) => new Date(b.datum) - new Date(a.datum))
@@ -391,12 +415,21 @@
 
             } else if (type === 'einnahmen') {
                 const selectedCategory = $('#kategorie-einnahme-uebersicht').val();
-                console.log('Einnahmen-Filter angewendet: ' + selectedCategory);
+                console.log('Einnahmen-Filter angewendet: ' + selectedCategory + ', Monat: ' + selectedMonth + ', Jahr: ' + selectedYear);
 
                 let filteredData = allEinnahmen;
 
                 if (selectedCategory !== 'all') {
-                    filteredData = allEinnahmen.filter(item => item.kategorie === selectedCategory);
+                    filteredData = filteredData.filter(item => item.kategorie === selectedCategory);
+                }
+
+                if (selectedMonth !== 'all') {
+                    const monthNum = monthMap[selectedMonth];
+                    filteredData = filteredData.filter(item => item.datum.split('-')[1] === monthNum);
+                }
+
+                if (selectedYear !== 'all') {
+                    filteredData = filteredData.filter(item => item.datum.split('-')[0] === selectedYear);
                 }
 
                 filteredData = filteredData.slice().sort((a, b) => new Date(b.datum) - new Date(a.datum))
