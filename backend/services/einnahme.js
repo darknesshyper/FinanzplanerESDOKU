@@ -9,6 +9,9 @@ console.log('- Service Einnahme');
 serviceRouter.get('/einnahme/gib/:id', function(request, response) {
     console.log('Service Einnahme: Client requested one record, id=' + request.params.id);
 
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
+
     const einnahmeDao = new EinnahmeDao(request.app.locals.dbConnection);
     try {
         var obj = einnahmeDao.loadById(request.params.id);
@@ -39,6 +42,9 @@ serviceRouter.get('/einnahme/alle', function(request, response) {
 
 serviceRouter.get('/einnahme/existiert/:id', function(request, response) {
     console.log('Service Einnahme: Client requested check, if record exists, id=' + request.params.id);
+
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
 
     const einnahmeDao = new EinnahmeDao(request.app.locals.dbConnection);
     try {

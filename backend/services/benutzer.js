@@ -9,6 +9,9 @@ console.log('- Service Benutzer');
 serviceRouter.get('/benutzer/gib/:id', function (request, response) {
     console.log('Service Benutzer: Client requested one record, id=' + request.params.id);
 
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
+
     const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
     try {
         var obj = benutzerDao.loadById(request.params.id);
@@ -40,6 +43,9 @@ serviceRouter.get('/benutzer/aktuell', function (request, response) {
 serviceRouter.get('/benutzer/alle', function (request, response) {
     console.log('Service Benutzer: Client requested all records');
 
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
+
     const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
     try {
         var arr = benutzerDao.loadAll();
@@ -53,6 +59,9 @@ serviceRouter.get('/benutzer/alle', function (request, response) {
 
 serviceRouter.get('/benutzer/existiert/:id', function (request, response) {
     console.log('Service Benutzer: Client requested check, if record exists, id=' + request.params.id);
+
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
 
     const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
     try {
@@ -91,6 +100,9 @@ serviceRouter.get('/benutzer/eindeutig/:email', function (request, response) {
 
 serviceRouter.get('/benutzer/check/:email/:passwort', function (request, response) {
     console.log('Service Benutzer: Client requested check, if user has access for/with', request.params.email, request.params.passwort);
+
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
 
     var errorMsgs = [];
     if (helper.isUndefined(request.params.email))
@@ -146,6 +158,9 @@ serviceRouter.post('/benutzer', function (request, response) {
 serviceRouter.put('/benutzer', function (request, response) {
     console.log('Service Benutzer: Client requested update of existing record');
 
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
+
     var errorMsgs = [];
     if (helper.isUndefined(request.body.id))
         errorMsgs.push('id fehlt');
@@ -175,6 +190,9 @@ serviceRouter.put('/benutzer', function (request, response) {
 
 serviceRouter.delete('/benutzer/:id', function (request, response) {
     console.log('Service Benutzer: Client requested deletion of record, id=' + request.params.id);
+
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
 
     const benutzerDao = new BenutzerDao(request.app.locals.dbConnection);
     try {
