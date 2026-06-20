@@ -10,6 +10,9 @@ console.log('- Service Ausgabe');
 serviceRouter.get('/ausgabe/gib/:id', function(request, response) {
     console.log('Service Ausgabe: Client requested one record, id=' + request.params.id);
 
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
+
     const ausgabeDao = new AusgabeDao(request.app.locals.dbConnection);
     try {
         var obj = ausgabeDao.loadById(request.params.id);
@@ -40,6 +43,9 @@ serviceRouter.get('/ausgabe/alle', function(request, response) {
 
 serviceRouter.get('/ausgabe/existiert/:id', function(request, response) {
     console.log('Service Ausgabe: Client requested check, if record exists, id=' + request.params.id);
+
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
 
     const ausgabeDao = new AusgabeDao(request.app.locals.dbConnection);
     try {

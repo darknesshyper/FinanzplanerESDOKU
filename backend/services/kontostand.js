@@ -10,6 +10,9 @@ console.log('- Service Kontostand');
 serviceRouter.get('/kontostand/gib/:id', function(request, response) {
     console.log('Service Kontostand: Client requested one record, id=' + request.params.id);
 
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
+
     const kontostandDao = new KontostandDao(request.app.locals.dbConnection);
     try {
         var obj = kontostandDao.loadById(request.params.id);
@@ -40,6 +43,9 @@ serviceRouter.get('/kontostand/alle', function(request, response) {
 
 serviceRouter.get('/kontostand/existiert/:id', function(request, response) {
     console.log('Service Kontostand: Client requested check, if record exists, id=' + request.params.id);
+
+    var benutzerId = validateTokenAndGetUserId(request, response);
+    if (benutzerId === null) return;
 
     const kontostandDao = new KontostandDao(request.app.locals.dbConnection);
     try {
