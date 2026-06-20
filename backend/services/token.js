@@ -19,14 +19,14 @@ function validateTokenAndGetUserId(request, response) {
     if (helper.isUndefined(authorization)) {
         console.log('Service Token: Validation not possible, Authorization missing');
         response.status(401).json({ 'fehler': true, 'nachricht': 'Validation failed, authorization missing', 'code': 'NO_TOKEN' });
-        return;
+        return null;
     }
 
     // now check if Bearer Keyword at beginning
     if (!helper.strStartsWith(authorization, 'Bearer ')) {
         console.log('Service Token: Validation not possible, Format mismatch');
         response.status(401).json({ 'fehler': true, 'nachricht': 'Validation failed, Format mismatch', 'code': 'TOKEN_INVALID' });
-        return;
+        return null;
     }
 
     // ok remove the starting text and validate the token itself
@@ -47,7 +47,7 @@ function validateTokenAndGetUserId(request, response) {
         if (helper.isUndefined(decoded.data) || helper.isUndefined(decoded.data.id) || helper.isUndefined(decoded.data.email)) {
             console.log('Service Token: Validation failed, Format of payload is incorrect');
             response.status(401).json({ 'fehler': true, 'nachricht': 'Validation failed, Format of Payload is incorrect', 'code': 'TOKEN_INVALID' });
-            return;
+            return null;
         }
 
         // here we could do all other kind of checks, like verifying against the database but thats enough. Lets just modify the data a bit and send it back as successfull response
@@ -65,7 +65,7 @@ function validateTokenAndGetUserId(request, response) {
         } else {
             response.status(401).json({ 'fehler': true, 'nachricht': ex.message, 'code': 'TOKEN_INVALID' });
         }
-        return;
+        return null;
     }
 }
 
