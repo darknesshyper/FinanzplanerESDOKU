@@ -25,11 +25,21 @@ function validateTokenExistence() {
     }
 }
 
-function validateTokenFromSession() {
+function validateTokenFromSession(allowNoSession = false) {
     console.log('Validating Token from Session against Service');
     
-    // credentials/token has to be in session!!!!
+     // credentials/token has to be in session!!!!
     credentials = getJSONSessionItem('credentials');
+    
+    if (!credentials || !credentials.token) {
+        console.log('No valid credentials in session');
+        if (allowNoSession) {
+            console.log('No session required for this page');
+            return;
+        }
+        jumpToLogin();
+        return;
+    }
 
     $.ajax({
         url: 'http://localhost:8000/api/token/validate',
