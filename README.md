@@ -12,3 +12,9 @@ The Expenses section focuses on outgoing funds. Users can view detailed expendit
 
 ## Income
 This section is dedicated to tracking revenue. It provides visual insights into income sources and allows users to log new income entries to keep their budget up to date.
+
+## Test User
+This project includes a test user with sample data already inserted:
+
+- **Email:** `test@test.de`
+- **Password:** `test`
