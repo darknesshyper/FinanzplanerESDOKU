@@ -54,3 +54,27 @@ function validateTokenFromSession() {
         jumpToLogin();
     });
 }
+
+// Prüft ob bereits ein gültiger Token existiert (für Login-Seite)
+function checkIfAlreadyLoggedIn() {
+    console.log('Checking if already logged in');
+    
+    credentials = getJSONSessionItem('credentials');
+
+    $.ajax({
+        url: 'http://localhost:8000/api/token/validate',
+        method: 'get',
+        contentType: 'application/json; charset=utf-8',
+        cache: false,
+        dataType: 'json',
+        headers: { 'Authorization': 'Bearer ' + credentials.token }
+    }).done(function (response) {
+        console.log('Already logged in, redirecting to overview');
+        userObj = response;
+        location.href = 'uebersicht.html';
+    }).fail(function (jqXHR, statusText, error) {
+        console.log('Token invalid or expired, staying on login page');
+        clearSession();
+        // Token löschen und auf Login-Seite bleiben
+    });
+}

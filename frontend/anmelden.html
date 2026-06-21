@@ -110,6 +110,11 @@
 
   <script>
     $(document).ready(function () {
+      if (existsSessionItem('credentials')) {
+        checkIfAlreadyLoggedIn();
+        return;
+      }
+
       $('#userEmail').keydown(clearErrorArea);
       $('#userPassword').keydown(clearErrorArea);
 
